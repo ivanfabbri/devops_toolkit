@@ -3,10 +3,7 @@
 
   tasks:
 
-    - name: Install Python requirements
-      become: true
-      ansible.builtin.pip:
-        name: docker
+    
 
     - name: Install portainer agent
       become: true
