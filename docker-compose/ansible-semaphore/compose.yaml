@@ -35,7 +35,7 @@ services:
       - SEMAPHORE_ADMIN_NAME=admin
       - SEMAPHORE_ADMIN_EMAIL=admin@localhost
       - SEMAPHORE_ADMIN=admin
-      - SEMAPHORE_ACCESS_KEY_ENCRYPTION=  # add to your access key encryption !
+      - SEMAPHORE_ACCESS_KEY_ENCRYPTION=change-this-key  # add to your access key encryption !
       - ANSIBLE_HOST_KEY_CHECKING=false  # (optional) change to true if you want to enable host key checking
     volumes:
       - ./inventory/:/inventory:ro

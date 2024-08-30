@@ -1,0 +1,13 @@
+---
+- name: Deploy Semaphore UI for Ansible on Docker
+  hosts: all
+  become: true
+
+  tasks:
+
+    - name: Deploy Semaphore with docker-compose file and start services
+      community.docker.docker_compose:
+        project_src: ./docker-compose/ansible-semaphore/
+        files:
+        - compose.yaml
+      register: output
