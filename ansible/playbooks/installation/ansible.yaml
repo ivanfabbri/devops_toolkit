@@ -1,0 +1,19 @@
+
+- name: Install ansible
+  gather_facts: false
+  hosts: all
+  become: true
+
+  tasks:
+
+    - name: Add ansible repository
+      ansible.builtin.yum_repository:
+        name: epel-release
+        state: present
+
+    - name: Install ansible
+      ansible.builtin.yum:
+        name:
+          - ansible
+        state: latest
+        update_cache: true
