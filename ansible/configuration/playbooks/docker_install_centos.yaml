@@ -9,6 +9,7 @@
       yum:
         name: yum-utils
         state: latest
+      become: true
 
     - name: Add Docker repo
       get_url:
