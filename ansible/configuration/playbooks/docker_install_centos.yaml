@@ -1,7 +1,7 @@
 ---
 - name: Install docker community edition
   gather_facts: No
-  hosts: default
+  hosts: all
 
   tasks:
 
