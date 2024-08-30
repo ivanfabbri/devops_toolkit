@@ -6,10 +6,12 @@
 
   tasks:
 
-    - name: Add ansible repository
-      ansible.builtin.yum_repository:
-        name: epel-release
-        state: present
+    - name: Install Extra Packages for Enterprise Linux (EPEL)
+      ansible.builtin.yum:
+        name:
+          - epel-release
+        state: latest
+        update_cache: true
 
     - name: Install ansible
       ansible.builtin.yum:
