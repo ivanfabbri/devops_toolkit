@@ -5,9 +5,14 @@
 
   tasks:
 
+    - name: Retrieve semaphore docker-compose file from GIT
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/ivanfabbri/boilerplate/main/docker-compose/ansible-semaphore/compose.yaml
+        dest: /tmp/devops/ansible-semaphore/compose.yaml
+
     - name: Deploy Semaphore with docker-compose file and start services
       community.docker.docker_compose_v2:
-        project_src: /docker-compose/ansible-semaphore/
+        project_src: /tmp/devops/ansible-semaphore/
         files:
         - compose.yaml
       register: output
