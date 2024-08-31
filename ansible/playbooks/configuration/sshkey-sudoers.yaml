@@ -11,13 +11,13 @@
         path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir') }}"
         state: directory
         mode: '0755'
-      become: true
+      become: false
 
     - name: Synchronization of src on the control machine to dest on the remote hosts
       ansible.builtin.copy:
         src: "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}.pub"
         dest: "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}.pub"
-      become: true
+      become: false
       delegate_to: localhost
       connection: local
 
@@ -28,7 +28,7 @@
         key: "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}"
       with_fileglob:
         - "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}.pub"
-      become: true
+      become: false
 
     - name: Change sudoers file
       ansible.builtin.lineinfile:
