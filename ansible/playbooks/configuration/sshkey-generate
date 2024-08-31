@@ -16,6 +16,7 @@
     - name: Generate an OpenSSH keypair with the default values (4096 bits, rsa)
       community.crypto.openssh_keypair:
         path: "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}"
+      become: false
 
     - name: Retrieve the key
       ansible.builtin.command: cat {{ lookup('ansible.builtin.env', 'ssl_key_path') }}
