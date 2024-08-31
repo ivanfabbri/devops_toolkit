@@ -19,6 +19,7 @@
         dest: "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}.pub"
       become: true
       delegate_to: localhost
+      connection: local
 
     - name: Install public keys
       ansible.posix.authorized_key:
