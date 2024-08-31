@@ -18,6 +18,7 @@
         src: "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}.pub"
         dest: "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}.pub"
       become: true
+      become_user: ivanfabbri
 
     - name: Install public keys
       ansible.posix.authorized_key:
