@@ -13,6 +13,8 @@
         user: "{{ lookup('ansible.builtin.env', 'ssl_user') }}"
         state: present
         key: "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}"
+      with_fileglob:
+        - "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}.pub"
       become: true
 
     - name: Change sudoers file
