@@ -5,6 +5,11 @@
 
   tasks:
 
+    - name: Creates the temp directory to download the compose file
+      ansible.builtin.file:
+        path: /tmp/devops/ansible-semaphore/
+        state: directory
+
     - name: Retrieve semaphore docker-compose file from GIT
       ansible.builtin.get_url:
         url: https://raw.githubusercontent.com/ivanfabbri/boilerplate/main/docker-compose/ansible-semaphore/compose.yaml
