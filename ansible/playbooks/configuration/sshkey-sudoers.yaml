@@ -16,6 +16,7 @@
         user: "{{ lookup('ansible.builtin.env', 'ssl_user') }}"
         state: present
         key: "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}"
+      become: true
 
     - name: Change sudoers file
       ansible.builtin.lineinfile:
@@ -25,3 +26,4 @@
         regexp: 'ALL=\(ALL\) NOPASSWD: ALL'
         line: "{{ lookup('ansible.builtin.env', 'ssl_user') }} ALL=(ALL) NOPASSWD: ALL"
         mode: '0440'
+      become: true
