@@ -19,9 +19,7 @@
       ansible.posix.authorized_key:
         user: "{{ lookup('ansible.builtin.env', 'ssl_user') }}"
         state: present
-        key: "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}"
-      with_fileglob:
-        - "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}.pub"
+        key: "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}.pub"
       become: false
 
     - name: Change sudoers file
