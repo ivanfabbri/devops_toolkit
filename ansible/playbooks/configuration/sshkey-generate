@@ -8,9 +8,10 @@
 
     - name: Create a directory to store the ssh key
       ansible.builtin.file:
-        path: "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}"
+        path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir') }}"
         state: directory
         mode: '0755'
+      become: false
 
     - name: Generate an OpenSSH keypair with the default values (4096 bits, rsa)
       community.crypto.openssh_keypair:
