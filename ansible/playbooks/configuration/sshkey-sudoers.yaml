@@ -13,13 +13,7 @@
         mode: '0755'
       become: false
 
-    - name: Synchronization of src on the control machine to dest on the remote hosts
-      ansible.builtin.copy:
-        src: "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}.pub"
-        dest: "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}.pub"
-      become: false
-      delegate_to: localhost
-      connection: local
+    
 
     - name: Install public keys
       ansible.posix.authorized_key:
