@@ -17,6 +17,7 @@
       ansible.builtin.copy:
         src: "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}"
         dest: "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}"
+      become: true
 
     - name: Install public keys
       ansible.posix.authorized_key:
