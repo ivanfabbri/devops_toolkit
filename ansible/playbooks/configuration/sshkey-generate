@@ -1,0 +1,19 @@
+---
+- name: Generate a SSH key
+  hosts: all
+  become: true
+
+  tasks:
+
+    - name: Generate an OpenSSH keypair with the default values (4096 bits, rsa)
+      community.crypto.openssh_keypair:
+        path: "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}"
+
+    - name: Retrieve the key
+      ansible.builtin.command: cat {{ lookup('ansible.builtin.env', 'ssl_key_path') }}
+      register: ssl_key
+
+    - name: Prints the key
+      ansible.builtin.debug:
+        msg:
+        - "The key was built using '{{ ssl_key }}'. Please retain this for later use."
