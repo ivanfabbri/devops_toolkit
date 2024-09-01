@@ -31,7 +31,7 @@
         mode: '0600'
 
     - name: Retrieve the key
-      ansible.builtin.command: cat "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}/{{ ssl_key_name }}"
+      ansible.builtin.command: cat "{{ lookup('ansible.builtin.env', 'ssl_key_dir') }}/{{ ssl_key_name }}"
       register: ssl_key
 
     - name: Print the private key to be added to Ansible Semaphore Key Store
