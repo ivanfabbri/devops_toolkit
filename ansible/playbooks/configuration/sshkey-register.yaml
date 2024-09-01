@@ -8,8 +8,6 @@
 
   tasks:
 
-    
-
     - name: Fetch the public SSH key from controller
       ansible.builtin.command: cat "{{ lookup('ansible.builtin.env', 'ssh_key_dir', default='/devops/ssh') }}/{{ ssl_key_name }}.pub"
       register: ssh_key
@@ -22,4 +20,4 @@
       delegate_to: "{{ item[1] }}"
       with_nested:
         - "{{ ssh_key.stdout }}"
-        - "{{ groups['nodes'] }}"
+        - "{{ groups['vms'] }}"
