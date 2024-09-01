@@ -1,6 +1,6 @@
 ---
 - name: Deploy portainer-ce latest
-  hosts: master
+  hosts: controller
   become: true
 
   tasks:

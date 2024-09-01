@@ -1,38 +1,42 @@
 ---
 - name: Install docker community edition
   gather_facts: false
-  hosts: all
+  hosts: vms
 
   tasks:
 
-    - name: Install yum utils
-      yum:
-        name: yum-utils
+    - name: Install YUM utils
+      ansible.builtin.yum:
+        name:
+          - yum-utils
         state: latest
-      become: true
+        update_cache: true
 
-    - name: Add Docker repo
-      get_url:
-        url: https://download.docker.com/linux/centos/docker-ce.repo
-        dest: /etc/yum.repos.d/docer-ce.repo
-      become: true
+    - name: Add Docker repository
+      ansible.builtin.yum_repository:
+        name: docker
+        description: Docker Community Edition repo
+        baseurl: https://download.docker.com/linux/centos/docker-ce.repo
 
     - name: Install Docker
-      package:
-        name: docker-ce, docker-ce-cli, containerd.io, docker-buildx-plugin, docker-compose-plugin
+      ansible.builtin.yum:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
         state: latest
-      become: true
+        update_cache: true
 
-    - name: Start Docker service
-      service:
+    - name: Start service docker, if not started
+      ansible.builtin.service:
         name: docker
         state: started
         enabled: yes
-      become: true
 
-    - name: Add user vagrant to docker group
-      user:
-        name: vagrant
+    - name: Add SSH user to docker group
+      ansible.builtin.user:
+        name: "{{ lookup('ansible.builtin.env', 'ssh_user') }}"
         groups: docker
         append: yes
-      become: true
