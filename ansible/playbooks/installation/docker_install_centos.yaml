@@ -42,3 +42,4 @@
         name: "{{ lookup('ansible.builtin.env', 'ssh_user') }}"
         groups: docker
         append: yes
+      become: true
