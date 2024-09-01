@@ -5,7 +5,6 @@
   tasks:
   
     - name: Install portainer agent
-      become: true
       community.docker.docker_container:
         name: "portainer_agent"
         state: started
