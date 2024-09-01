@@ -1,26 +1,24 @@
 ---
-- name: Add ssh key
-  hosts: all
+- name: Register SSL public key on targets
+  hosts: nodes
   gather_facts: false
-  become: false
+
+  vars:
+    ssl_key_name: id_rsa
 
   tasks:
 
-    - name: Create a directory to store the ssh key
+    - name: Create a directory to store the SSL key
       ansible.builtin.file:
-        path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir') }}"
+        path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='/devops/ssh') }}"
         state: directory
-        mode: '0755'
-      become: false
-
-    
+        mode: '0700'
 
     - name: Install public keys
       ansible.posix.authorized_key:
         user: "{{ lookup('ansible.builtin.env', 'ssl_user') }}"
         state: present
-        key: "{{ lookup('ansible.builtin.env', 'ssl_key_path') }}.pub"
-      become: false
+        key: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='/devops/ssh') }}/{{ ssl_key_name }}"
 
     - name: Change sudoers file
       ansible.builtin.lineinfile:

@@ -1,5 +1,5 @@
 ---
-- name: Generate a SSH key pair
+- name: Generate a SSL key pair
   hosts: controller
   gather_facts: false
 
@@ -8,11 +8,11 @@
 
   tasks:
 
-    - name: Block to create the directory, SSH key pair, ensure correct permissions, retrieve and print the key
+    - name: Block to create the directory, SSL key pair, ensure correct permissions, retrieve and print the key
 
       block:
 
-        - name: Create a directory to store the ssh key
+        - name: Create a directory to store the SSL key
           ansible.builtin.file:
             path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='/devops/ssh') }}"
             state: directory
@@ -22,13 +22,13 @@
           community.crypto.openssh_keypair:
             path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='/devops/ssh') }}/{{ ssl_key_name }}"
 
-        - name: Ensure correct permissions for the public ssh key
+        - name: Ensure correct permissions for the public SSL key
           ansible.builtin.file:
             path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='/devops/ssh') }}/{{ ssl_key_name }}.pub"
             state: file
             mode: '0644'
 
-        - name: Ensure correct permissions for the private ssh key
+        - name: Ensure correct permissions for the private SSL key
           ansible.builtin.file:
             path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='/devops/ssh') }}/{{ ssl_key_name }}"
             state: file
