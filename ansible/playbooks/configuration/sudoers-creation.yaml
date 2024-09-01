@@ -1,6 +1,6 @@
 ---
 - name: Creates the sudoers file on the target nodes
-  hosts: all
+  hosts: vms
   gather_facts: false
 
   tasks:
