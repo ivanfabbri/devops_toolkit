@@ -37,4 +37,3 @@
     - name: Print the private key to be added to Ansible Semaphore Key Store
       ansible.builtin.debug:
         var: ssl_key
-        verbosity: 2
