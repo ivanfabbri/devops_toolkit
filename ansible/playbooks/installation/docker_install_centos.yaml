@@ -29,14 +29,19 @@
         state: latest
         update_cache: true
 
-    - name: Start service docker, if not started
-      ansible.builtin.service:
+    - name: Ensure group "docker" exists
+      ansible.builtin.group:
         name: docker
-        state: started
-        enabled: yes
+        state: present
 
     - name: Add SSH user to docker group
       ansible.builtin.user:
         name: "{{ lookup('ansible.builtin.env', 'ssh_user') }}"
         groups: docker
         append: yes
+
+    - name: Restart docker service, if not started
+      ansible.builtin.service:
+        name: docker
+        state: restarted
+        enabled: yes
