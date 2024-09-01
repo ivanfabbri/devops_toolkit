@@ -1,8 +1,7 @@
 ---
 - name: Deploy Semaphore UI for Ansible on Docker
-  hosts: all
+  hosts: controller
   gather_facts: false
-  become: true
 
   tasks:
 

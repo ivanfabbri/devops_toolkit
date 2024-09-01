@@ -1,7 +1,7 @@
 
 - name: Install ansible
   gather_facts: false
-  hosts: all
+  hosts: controller
   become: true
 
   tasks:
