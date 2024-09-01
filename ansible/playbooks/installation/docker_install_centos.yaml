@@ -29,11 +29,6 @@
         state: latest
         update_cache: true
 
-    - name: Ensure docker service is stopped
-      ansible.builtin.service:
-        name: docker
-        state: stopped
-
     - name: Ensure "docker" group exists
       ansible.builtin.group:
         name: docker
