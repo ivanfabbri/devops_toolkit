@@ -1,0 +1,32 @@
+---
+- name: Register SSH public key on nodes
+  hosts: controller
+  gather_facts: false
+
+  vars:
+    ssl_key_name: id_rsa
+
+  tasks:
+
+    - name: Create a directory to store the SSH key on the target node with delegation
+      ansible.builtin.file:
+        path: "{{ lookup('ansible.builtin.env', 'ssh_key_dir', default='/devops/ssh') }}"
+        state: directory
+        mode: '0700'
+      delegate_to: "{{ item[0] }}"
+      with_nested:
+        - "{{ groups['nodes'] }}"
+
+    - name: Fetch the public SSH key from controller
+      ansible.builtin.command: cat "{{ lookup('ansible.builtin.env', 'ssh_key_dir', default='/devops/ssh') }}/{{ ssl_key_name }}.pub"
+      register: ssh_key
+
+    - name: Install the controller public key on the target nodes with delegation
+      ansible.posix.authorized_key:
+        user: "{{ lookup('ansible.builtin.env', 'ssh_user') }}"
+        state: present
+        key: "{{ item[0] }}"
+      delegate_to: "{{ item[1] }}"
+      with_nested:
+        - "{{ ssh_key.stdout }}"
+        - "{{ groups['nodes'] }}"

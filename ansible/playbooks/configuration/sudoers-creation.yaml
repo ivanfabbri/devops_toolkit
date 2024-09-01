@@ -1,0 +1,16 @@
+---
+- name: Creates the sudoers file on the target nodes
+  hosts: nodes
+  gather_facts: false
+
+  tasks:
+
+    - name: Change sudoers file
+      ansible.builtin.lineinfile:
+        path: "/etc/sudoers.d/{{ lookup('ansible.builtin.env', 'ssh_user') }}"
+        state: present
+        create: true
+        regexp: 'ALL=\(ALL\) NOPASSWD: ALL'
+        line: "{{ lookup('ansible.builtin.env', 'ssh_user') }} ALL=(ALL) NOPASSWD: ALL"
+        mode: '0440'
+      become: true
