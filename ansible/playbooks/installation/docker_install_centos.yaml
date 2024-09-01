@@ -33,9 +33,8 @@
       ansible.builtin.service:
         name: docker
         state: stopped
-        enabled: yes
 
-    - name: Ensure group "docker" exists
+    - name: Ensure "docker" group exists
       ansible.builtin.group:
         name: docker
         state: present
@@ -46,7 +45,7 @@
         groups: docker
         append: yes
 
-    - name: Restart docker service, if not started
+    - name: Start docker service, if not started
       ansible.builtin.service:
         name: docker
         state: started
