@@ -1,5 +1,5 @@
 ---
-- name: Register SSL public key on targets
+- name: Register SSH public key on targets
   hosts: nodes
   gather_facts: false
 
@@ -8,24 +8,24 @@
 
   tasks:
 
-    - name: Create a directory to store the SSL key
+    - name: Create a directory to store the SSH key
       ansible.builtin.file:
-        path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='/devops/ssh') }}"
+        path: "{{ lookup('ansible.builtin.env', 'ssh_key_dir', default='/devops/ssh') }}"
         state: directory
         mode: '0700'
 
     - name: Install public keys
       ansible.posix.authorized_key:
-        user: "{{ lookup('ansible.builtin.env', 'ssl_user') }}"
+        user: "{{ lookup('ansible.builtin.env', 'ssh_user') }}"
         state: present
-        key: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='/devops/ssh') }}/{{ ssl_key_name }}.pub"
+        key: "{{ lookup('ansible.builtin.env', 'ssh_key_dir', default='/devops/ssh') }}/{{ ssl_key_name }}.pub"
 
     - name: Change sudoers file
       ansible.builtin.lineinfile:
-        path: "/etc/sudoers.d/{{ lookup('ansible.builtin.env', 'ssl_user') }}"
+        path: "/etc/sudoers.d/{{ lookup('ansible.builtin.env', 'ssh_user') }}"
         state: present
         create: true
         regexp: 'ALL=\(ALL\) NOPASSWD: ALL'
-        line: "{{ lookup('ansible.builtin.env', 'ssl_user') }} ALL=(ALL) NOPASSWD: ALL"
+        line: "{{ lookup('ansible.builtin.env', 'ssh_user') }} ALL=(ALL) NOPASSWD: ALL"
         mode: '0440'
       become: true
