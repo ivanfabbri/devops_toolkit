@@ -8,32 +8,40 @@
 
   tasks:
 
-    - name: Create a directory to store the ssh key
-      ansible.builtin.file:
-        path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir') }}"
-        state: directory
-        mode: '0700'
+    block:
 
-    - name: Generate an OpenSSH keypair with the default values (4096 bits, rsa)
-      community.crypto.openssh_keypair:
-        path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir') }}/{{ ssl_key_name }}"
+      - name: Create a directory to store the ssh key
+        ansible.builtin.file:
+          path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='/devops/ssh') }}"
+          state: directory
+          mode: '0700'
 
-    - name: Ensure correct permissions for the public ssh key
-      ansible.builtin.file:
-        path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir') }}/{{ ssl_key_name }}.pub"
-        state: file
-        mode: '0644'
+      - name: Generate an OpenSSH keypair with the default values (4096 bits, rsa)
+        community.crypto.openssh_keypair:
+          path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='/devops/ssh') }}/{{ ssl_key_name }}"
 
-    - name: Ensure correct permissions for the private ssh key
-      ansible.builtin.file:
-        path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir') }}/{{ ssl_key_name }}"
-        state: file
-        mode: '0600'
+      - name: Ensure correct permissions for the public ssh key
+        ansible.builtin.file:
+          path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='/devops/ssh') }}/{{ ssl_key_name }}.pub"
+          state: file
+          mode: '0644'
 
-    - name: Retrieve the key
-      ansible.builtin.command: cat "{{ lookup('ansible.builtin.env', 'ssl_key_dir') }}/{{ ssl_key_name }}"
-      register: ssl_key
+      - name: Ensure correct permissions for the private ssh key
+        ansible.builtin.file:
+          path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='/devops/ssh') }}/{{ ssl_key_name }}"
+          state: file
+          mode: '0600'
 
-    - name: Print the private key to be added to Ansible Semaphore Key Store
-      ansible.builtin.debug:
-        var: ssl_key
+      - name: Retrieve the key
+        ansible.builtin.command: cat "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='/devops/ssh') }}/{{ ssl_key_name }}"
+        register: ssl_key
+
+      - name: Print the private key to be added to Ansible Semaphore Key Store
+        ansible.builtin.debug:
+          var: ssl_key
+
+    rescue:
+
+      - name: Print when errors
+        ansible.builtin.debug:
+          msg: "Error occurred while generating the SSH key pair."
