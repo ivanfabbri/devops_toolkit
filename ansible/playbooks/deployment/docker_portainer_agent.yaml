@@ -1,5 +1,6 @@
 - name: Install portainer agent
   hosts: nodes
+  gather_facts: false
 
   tasks:
   

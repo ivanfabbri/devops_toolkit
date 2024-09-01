@@ -1,6 +1,7 @@
 ---
 - name: Deploy portainer-ce latest
   hosts: controller
+  gather_facts: false
   become: true
 
   tasks:
