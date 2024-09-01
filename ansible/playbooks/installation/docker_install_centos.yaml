@@ -11,6 +11,7 @@
           - yum-utils
         state: latest
         update_cache: true
+      become: true
 
     - name: Add Docker repository
       ansible.builtin.yum_repository:
