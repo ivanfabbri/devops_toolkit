@@ -2,6 +2,7 @@
 - name: Install docker community edition
   gather_facts: false
   hosts: vms
+  become: true
 
   tasks:
 
@@ -11,13 +12,11 @@
           - yum-utils
         state: latest
         update_cache: true
-      become: true
 
     - name: Add Docker repository
       ansible.builtin.get_url:
         url: https://download.docker.com/linux/centos/docker-ce.repo
         dest: /etc/yum.repos.d/docker-ce.repo
-      become: true
 
     - name: Install Docker
       ansible.builtin.yum:
@@ -29,7 +28,6 @@
           - docker-compose-plugin
         state: latest
         update_cache: true
-      become: true
 
     - name: Start service docker, if not started
       ansible.builtin.service:
@@ -42,4 +40,3 @@
         name: "{{ lookup('ansible.builtin.env', 'ssh_user') }}"
         groups: docker
         append: yes
-      become: true
