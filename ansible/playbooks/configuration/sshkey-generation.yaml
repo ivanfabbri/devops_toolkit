@@ -5,7 +5,6 @@
 
   vars:
     ssl_key_name: id_rsa
-    ssl_key_default_dir: /devops/ssh
 
   tasks:
 
@@ -15,28 +14,28 @@
 
         - name: Create a directory to store the ssh key
           ansible.builtin.file:
-            path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='ssl_key_default_dir') }}"
+            path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='/devops/ssh') }}"
             state: directory
             mode: '0700'
 
         - name: Generate an OpenSSH keypair with the default values (4096 bits, rsa)
           community.crypto.openssh_keypair:
-            path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='ssl_key_default_dir') }}/{{ ssl_key_name }}"
+            path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='/devops/ssh') }}/{{ ssl_key_name }}"
 
         - name: Ensure correct permissions for the public ssh key
           ansible.builtin.file:
-            path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='ssl_key_default_dir') }}/{{ ssl_key_name }}.pub"
+            path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='/devops/ssh') }}/{{ ssl_key_name }}.pub"
             state: file
             mode: '0644'
 
         - name: Ensure correct permissions for the private ssh key
           ansible.builtin.file:
-            path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='ssl_key_default_dir') }}/{{ ssl_key_name }}"
+            path: "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='/devops/ssh') }}/{{ ssl_key_name }}"
             state: file
             mode: '0600'
 
         - name: Retrieve the key
-          ansible.builtin.command: cat "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='ssl_key_default_dir') }}/{{ ssl_key_name }}"
+          ansible.builtin.command: cat "{{ lookup('ansible.builtin.env', 'ssl_key_dir', default='/devops/ssh') }}/{{ ssl_key_name }}"
           register: ssl_key
 
         - name: Print the private key to be added to Ansible Semaphore Key Store
