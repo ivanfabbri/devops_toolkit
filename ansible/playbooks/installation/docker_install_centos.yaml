@@ -16,7 +16,7 @@
     - name: Add Docker repository
       ansible.builtin.get_url:
         url: https://download.docker.com/linux/centos/docker-ce.repo
-        dest: /etc/yum.repos.d/
+        dest: /etc/yum.repos.d/docker-ce.repo
       become: true
 
     - name: Install Docker
