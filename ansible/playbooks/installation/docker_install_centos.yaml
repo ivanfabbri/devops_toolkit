@@ -14,11 +14,9 @@
       become: true
 
     - name: Add Docker repository
-      ansible.builtin.yum_repository:
-        name: docker-ce
-        description: Docker Community Edition repo
-        baseurl: https://download.docker.com/linux/centos/docker-ce.repo
-        state: present
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/
       become: true
 
     - name: Install Docker
