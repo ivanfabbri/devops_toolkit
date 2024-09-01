@@ -18,6 +18,7 @@
         name: docker
         description: Docker Community Edition repo
         baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+      become: true
 
     - name: Install Docker
       ansible.builtin.yum:
@@ -29,6 +30,7 @@
           - docker-compose-plugin
         state: latest
         update_cache: true
+      become: true
 
     - name: Start service docker, if not started
       ansible.builtin.service:
