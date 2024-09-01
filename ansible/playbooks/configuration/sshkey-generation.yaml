@@ -1,6 +1,6 @@
 ---
 - name: Generate a SSH key pair
-  hosts: master
+  hosts: controller
   gather_facts: false
 
   vars:
