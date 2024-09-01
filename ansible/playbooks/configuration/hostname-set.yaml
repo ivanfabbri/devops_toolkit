@@ -1,0 +1,17 @@
+---
+- name: Sets the hostname to the target
+  hosts: all
+  gather_facts: false
+  become: true
+
+  vars_prompt:
+
+    - name: hostname
+      prompt: What is the hostname of the server ?
+      private: true
+
+  tasks:
+
+    - name: Sets the hostname
+      ansible.builtin.hostname:
+        name: {{ hostname }}
