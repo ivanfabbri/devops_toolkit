@@ -1,5 +1,5 @@
 - name: Install portainer agent
-  hosts: all
+  hosts: nodes
 
   tasks:
   
