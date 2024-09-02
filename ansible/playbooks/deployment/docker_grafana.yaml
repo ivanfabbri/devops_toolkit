@@ -26,4 +26,4 @@
         networks:
           - name: monitoring_network
         restart_policy: unless-stopped
-        state: present
+        state: started
