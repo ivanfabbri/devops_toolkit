@@ -40,6 +40,14 @@
         groups: docker
         append: yes
 
+    - name: Create the daemon file to enable metrics endpoint
+      ansible.builtin.lineinfile:
+        path: "/etc/docker/daemon.json"
+        state: present
+        create: true
+        regexp: "{ 'metrics-addr': '127.0.0.1:9323' }"
+        line: "{ 'metrics-addr': '127.0.0.1:9323' }"
+
     - name: Start docker service, if not started
       ansible.builtin.service:
         name: docker
