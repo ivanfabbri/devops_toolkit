@@ -5,9 +5,15 @@
 
   tasks:
 
-    - name: Create new volume
+    - name: Ensure the volume is created
       community.docker.docker_volume:
         name: grafana_data
+        state: present
+
+    - name: Ensure the monitoring network is created
+      community.docker.docker_network:
+        name: monitoring_network
+        state: present
 
     - name: Deploy Grafana
       community.docker.docker_container:
@@ -18,6 +24,6 @@
         volumes:
           - grafana_data:/etc/grafana/
         networks:
-          - name: monitoring-network
+          - name: monitoring_network
         restart_policy: unless-stopped
         state: present

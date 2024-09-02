@@ -8,6 +8,11 @@
       community.docker.docker_volume:
         name: prometheus_data
 
+    - name: Ensure the monitoring network is created
+      community.docker.docker_network:
+        name: monitoring_network
+        state: present
+
     - name: Deploy Prometheus
       community.docker.docker_container:
         name: prometheus
@@ -18,6 +23,6 @@
           - "{{ prometheus_config }}:/etc/prometheus/prometheus.yml"
           - prometheus_data:/etc/prometheus
         networks:
-          - name: monitoring-network
+          - name: monitoring_network
         restart_policy: unless-stopped
         state: present
