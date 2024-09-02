@@ -4,7 +4,7 @@
   gather_facts: false
 
   tasks:
-    - name: Create new volume
+    - name: Ensure the volume is created
       community.docker.docker_volume:
         name: prometheus_data
 
@@ -20,7 +20,7 @@
         ports:
           - "9090:9090"
         volumes:
-          - "{{ prometheus_config }}:/etc/prometheus/prometheus.yml"
+          - "{{ lookup('ansible.builtin.env', 'prometheus_config') }}:/etc/prometheus/prometheus.yml"
           - prometheus_data:/etc/prometheus
         networks:
           - name: monitoring_network
