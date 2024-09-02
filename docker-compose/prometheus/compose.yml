@@ -1,0 +1,22 @@
+#version: "3.8"
+name: prometheus
+
+services:
+
+  prometheus:
+    image: 	prom/prometheus:latest
+    container_name: prometheus
+    networks:
+      - monitoring-network
+    ports:
+      - "9090:9090"
+    # Creating the following volumes helps prevent the loss of information when updating to a new version or upgrading to a higher edition
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/etc/prometheus
+
+volumes:
+  prometheus_data:
+
+networks:
+  monitoring-network:

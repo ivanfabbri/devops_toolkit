@@ -1,0 +1,23 @@
+---
+- name: Deploy Grafana latest
+  hosts: controller
+  gather_facts: false
+
+  tasks:
+
+    - name: Create new volume
+      community.docker.docker_volume:
+        name: grafana_data
+
+    - name: Deploy Grafana
+      community.docker.docker_container:
+        name: grafana
+        image: "grafana/grafana:latest"
+        ports:
+          - "3000:3000"
+        volumes:
+          - grafana_data:/etc/grafana/
+        networks:
+          - name: monitoring-network
+        restart_policy: unless-stopped
+        state: present

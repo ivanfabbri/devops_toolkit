@@ -1,0 +1,23 @@
+---
+- name: Deploy Prometheus latest
+  hosts: controller
+  gather_facts: false
+
+  tasks:
+    - name: Create new volume
+      community.docker.docker_volume:
+        name: prometheus_data
+
+    - name: Deploy Prometheus
+      community.docker.docker_container:
+        name: prometheus
+        image: "prom/prometheus:latest"
+        ports:
+          - "9090:9090"
+        volumes:
+          - "{{ prometheus_config }}:/etc/prometheus/prometheus.yml"
+          - prometheus_data:/etc/prometheus
+        networks:
+          - name: monitoring-network
+        restart_policy: unless-stopped
+        state: present

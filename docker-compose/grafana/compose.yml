@@ -1,0 +1,21 @@
+#version: "3.8"
+name: grafana
+
+services:
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    networks:
+      - monitoring-network
+    ports:
+      - "3000:3000"
+    # Creating the following volumes helps prevent the loss of information when updating to a new version or upgrading to a higher edition
+    volumes:
+      - grafana_data:/etc/grafana/
+
+volumes:
+  grafana_data:
+
+networks:
+  monitoring-network:
