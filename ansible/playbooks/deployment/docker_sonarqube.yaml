@@ -24,9 +24,9 @@
         ports:
           - "5432:5432"
         env:
-          - POSTGRES_USER: sonar
-          - POSTGRES_PASSWORD: sonar
-          - POSTGRES_DB: sonarqube_db
+          POSTGRES_USER: sonar
+          POSTGRES_PASSWORD: sonar
+          POSTGRES_DB: sonarqube_db
         volumes:
           - sonarqube_conf:/opt/sonarqube/conf
           - sonarqube_data:/opt/sonarqube/data
