@@ -1,0 +1,57 @@
+---
+- name: Deploy Sonarqube latest
+  hosts: controller
+  gather_facts: false
+
+  tasks:
+    - name: Ensure the volume is created
+      community.docker.docker_volume:
+        name:
+          - sonar_db
+          - sonar_db_data
+
+    - name: Ensure the devops network is created
+      community.docker.docker_network:
+        name: devops_network
+        state: present
+
+    - name: Deploy Sonarqube Postgres database
+      community.docker.docker_container:
+        name: sonardb
+        image: postgres:latest
+        ports:
+          - "5432:5432"
+        env:
+          - POSTGRES_USER: sonar
+          - POSTGRES_PASSWORD: sonar
+          - POSTGRES_DB: sonarqube_db
+        volumes:
+          - sonarqube_conf:/opt/sonarqube/conf
+          - sonarqube_data:/opt/sonarqube/data
+          - sonarqube_extensions:/opt/sonarqube/extensions
+          - sonarqube_logs:/opt/sonarqube/logs
+          - sonarqube_temp:/opt/sonarqube/temp
+        networks:
+          - name: devops_network
+        restart_policy: unless-stopped
+        state: started
+
+    - name: Deploy Sonarqube
+      community.docker.docker_container:
+        name: sonarqube
+        image: "sonarqube:community"
+        ports:
+          - "9000:9000"
+        env:
+          - SONAR_JDBC_URL: jdbc:postgresql://sonar_db:5432/sonarqube_db
+          - SONAR_JDBC_USERNAME: sonar
+          - SONAR_JDBC_PASSWORD: sonar
+        volumes:
+          - sonar_db:/var/lib/postgresql
+          - sonar_db_data:/var/lib/postgresql/data
+        networks:
+          - name: devops_network
+        depends_on:
+          - sonar_db
+        restart_policy: unless-stopped
+        state: started

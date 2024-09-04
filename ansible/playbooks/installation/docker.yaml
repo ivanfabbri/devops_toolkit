@@ -48,7 +48,7 @@
         regexp: '{ "metrics-addr": "0.0.0.0:9323" }'
         line: '{ "metrics-addr": "0.0.0.0:9323" }'
 
-    - name: Allow traffic in default zone on port 9323/tcp
+    - name: Allow traffic in default zone on port 9323/tcp for metrics endpoint
       ansible.posix.firewalld:
         port: 9323/tcp
         permanent: true
