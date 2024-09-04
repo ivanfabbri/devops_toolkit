@@ -45,9 +45,9 @@
         ports:
           - "9000:9000"
         env:
-          - SONAR_JDBC_URL: jdbc:postgresql://sonar_db:5432/sonarqube_db
-          - SONAR_JDBC_USERNAME: sonar
-          - SONAR_JDBC_PASSWORD: sonar
+          SONAR_JDBC_URL: jdbc:postgresql://sonar_db:5432/sonarqube_db
+          SONAR_JDBC_USERNAME: sonar
+          SONAR_JDBC_PASSWORD: sonar
         volumes:
           - sonar_db:/var/lib/postgresql
           - sonar_db_data:/var/lib/postgresql/data
