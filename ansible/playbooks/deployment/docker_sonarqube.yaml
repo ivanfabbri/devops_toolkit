@@ -82,3 +82,24 @@
         permanent: true
         state: enabled
       become: true
+
+    - name: Change sysctl file to increase the default vm.max_map_count from 65530 to 262144 recommended by Elastic Search required to deploy Sonarqube
+      ansible.builtin.lineinfile:
+        path: "/etc/sysctl.conf"
+        state: present
+        create: true
+        search_string: 'vm.max_map_count = 262144'
+        line: "vm.max_map_count = 262144"
+      become: true
+
+    - name: Reload the settings
+      ansible.builtin.command: sysctl --system
+      become: true
+
+    - name: Retrieve the settings for confirmation
+      ansible.builtin.command: sysctl vm.max_map_count
+      register: max_map_count
+
+    - name: Print vm.max_map_count that should match 262144
+      ansible.builtin.debug:
+        var: max_map_count
