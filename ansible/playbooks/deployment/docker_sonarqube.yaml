@@ -53,7 +53,5 @@
           - sonar_db_data:/var/lib/postgresql/data
         networks:
           - name: devops_network
-        depends_on:
-          - sonar_db
         restart_policy: unless-stopped
         state: started
