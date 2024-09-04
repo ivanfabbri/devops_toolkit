@@ -6,9 +6,11 @@
   tasks:
     - name: Ensure the volume is created
       community.docker.docker_volume:
-        name:
-          - sonardb
-          - sonardb_data
+        name: sonar_db
+
+    - name: Ensure the volume is created
+      community.docker.docker_volume:
+        name: sonar_db_data
 
     - name: Ensure the devops network is created
       community.docker.docker_network:
