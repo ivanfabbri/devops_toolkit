@@ -12,6 +12,26 @@
       community.docker.docker_volume:
         name: sonar_db_data
 
+    - name: Ensure the volume is created
+      community.docker.docker_volume:
+        name: sonarqube_conf
+
+    - name: Ensure the volume is created
+      community.docker.docker_volume:
+        name: sonarqube_data
+
+    - name: Ensure the volume is created
+      community.docker.docker_volume:
+        name: sonarqube_extensions
+
+    - name: Ensure the volume is created
+      community.docker.docker_volume:
+        name: sonarqube_logs
+
+    - name: Ensure the volume is created
+      community.docker.docker_volume:
+        name: sonarqube_temp
+
     - name: Ensure the devops network is created
       community.docker.docker_network:
         name: devops_network
@@ -55,3 +75,9 @@
           - name: devops_network
         restart_policy: unless-stopped
         state: started
+
+    - name: Allow traffic in default zone on port 9000/tcp for metrics endpoint
+      ansible.posix.firewalld:
+        port: 9000/tcp
+        permanent: true
+        state: enabled
