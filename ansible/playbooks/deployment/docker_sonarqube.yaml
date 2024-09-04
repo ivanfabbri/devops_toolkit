@@ -7,8 +7,8 @@
     - name: Ensure the volume is created
       community.docker.docker_volume:
         name:
-          - sonar_db
-          - sonar_db_data
+          - sonardb
+          - sonardb_data
 
     - name: Ensure the devops network is created
       community.docker.docker_network:
