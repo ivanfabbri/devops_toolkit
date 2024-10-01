@@ -1,26 +1,25 @@
 ---
-- name: Update and upgrade apt packages
-  hosts: all
+- name: Update and upgrade yum packages
+  hosts: vms
+  become: true
 
   tasks:
-    - name: Update packages with apt
-      when: ansible_pkg_mgr == 'apt'
-      ansible.builtin.apt:
-        update_cache: true
+
+    - name: Lists the updates available
+      ansible.builtin.yum:
+        list: updates
+      register: update_list
+
+    - name: Print the available updates
+      ansible.builtin.debug:
+        var: update_list
 
     - name: Update all packages with yum
-      when: ansible_pkg_mgr == 'yum'
       ansible.builtin.yum:
         name: '*'
         state: latest # noqa: package-latest
 
-    - name: Upgrade packages with apt
-      when: ansible_pkg_mgr == 'apt'
-      ansible.builtin.apt:
-        upgrade: dist
-
     - name: Upgrade packages with yum
-      when: ansible_pkg_mgr == 'yum'
       ansible.builtin.yum:
         name: '*'
         state: latest # noqa: package-latest
