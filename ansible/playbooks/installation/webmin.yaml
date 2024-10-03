@@ -1,0 +1,61 @@
+---
+- name: Install webmin
+  gather_facts: false
+  hosts: vms
+
+  tasks:
+
+    - name: Create a directory to store webmin information
+      ansible.builtin.file:
+        path: "/opt/webmin"
+        state: directory
+        mode: '0700'
+        owner: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}"
+        group: "{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+      become: true # elevate because is inside opt
+
+    - name: Create a directory to store webmin scripts for installation
+      ansible.builtin.file:
+        path: "/opt/webmin/setup"
+        state: directory
+        mode: '0700'
+      become: true # elevate because is inside opt
+
+    - name: Download automatic setup-repos.sh Webmin script to configure repositories
+      ansible.builtin.uri:
+        url: https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh
+        dest: /opt/webmin/setup
+      become: true
+
+    - name: Ensure the downloaded script has correct file permissions
+      ansible.builtin.file:
+        path: "/opt/webmin/setup/setup-repos.sh"
+        state: file
+        mode: '0700'
+      become: true
+
+    - name: Run the setup script for Webmin repositories with expect for the required response
+      ansible.builtin.expect:
+        command: /opt/webmin/setup/setup-repos.sh
+        responses:
+          Setup repository: "y"
+      become: true # should be run as root
+
+    - name: Install the latest version of Webmin
+      ansible.builtin.dnf:
+        name: webmin
+        state: latest
+      become: true # should be run as root
+
+    - name: Allow traffic in default zone on port 10000/tcp for Webmin
+      ansible.posix.firewalld:
+        port: 10000/tcp
+        permanent: true
+        state: enabled
+      become: true # should be run as root
+
+    - name: Reload firewalld service
+      ansible.builtin.service:
+        name: firewalld
+        state: reloaded
+      become: true # should be run as root
