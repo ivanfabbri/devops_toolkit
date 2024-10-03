@@ -59,3 +59,11 @@
         name: firewalld
         state: reloaded
       become: true # should be run as root
+
+    - name: Insert/Update referer configuration block in config to enable reverse proxy with subdomain
+      ansible.builtin.blockinfile:
+        path: /etc/webmin/config
+        append_newline: true
+        prepend_newline: true
+        block: |
+          referers="{{ lookup('ansible.builtin.env', 'webmin_url') }}"
