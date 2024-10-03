@@ -66,5 +66,5 @@
         append_newline: true
         prepend_newline: true
         block: |
-          referers="{{ lookup('ansible.builtin.env', 'webmin_url') }}"
+          referers={{ lookup('ansible.builtin.env', 'webmin_url') }}
       become: true
