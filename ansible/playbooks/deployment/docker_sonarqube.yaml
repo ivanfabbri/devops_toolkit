@@ -41,8 +41,6 @@
       community.docker.docker_container:
         name: sonarqube_postgres
         image: postgres:latest
-        ports:
-          - "5432:5432"
         env:
           POSTGRES_USER: sonar
           POSTGRES_PASSWORD: sonar
