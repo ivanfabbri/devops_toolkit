@@ -1,0 +1,36 @@
+---
+- name: Deploy Jenkins
+  hosts: controller
+  gather_facts: false
+
+  tasks:
+
+    - name: Create a directory to map Jenkins information
+      ansible.builtin.file:
+        path: /opt/jenkins/home
+        state: directory
+        mode: '0700'
+        owner: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}"
+        group: "{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+      become: true # elevate because is inside opt
+
+    - name: Ensure the devops network is created
+      community.docker.docker_network:
+        name: devops_network
+        state: present
+
+    - name: Deploy Jenkins
+      community.docker.docker_container:
+        name: jenkins
+        image: jenkins/jenkins:latest-jdk21
+        ports:
+          - "8080:8080"
+          - "50000:50000"
+        volumes:
+          - /opt/jenkins/home:/var/jenkins_home
+          # Mounts the host machine’s docker socket to the Jenkins container due to docker-in-docker (use docker to create docker image inside jenkins docker container)
+          - /var/run/docker.sock:/var/run/docker.sock
+        networks:
+          - name: devops_network
+        restart_policy: unless-stopped
+        state: started
