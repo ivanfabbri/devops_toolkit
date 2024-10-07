@@ -39,7 +39,7 @@
 
     - name: Deploy Sonarqube Postgres database
       community.docker.docker_container:
-        name: sonar_db
+        name: sonarqube_postgres
         image: postgres:latest
         ports:
           - "5432:5432"
@@ -65,7 +65,7 @@
         ports:
           - "9000:9000"
         env:
-          SONAR_JDBC_URL: jdbc:postgresql://sonar_db:5432/sonarqube_db
+          SONAR_JDBC_URL: jdbc:postgresql://sonarqube_postgres:5432/sonarqube_db
           SONAR_JDBC_USERNAME: sonar
           SONAR_JDBC_PASSWORD: sonar
         volumes:
