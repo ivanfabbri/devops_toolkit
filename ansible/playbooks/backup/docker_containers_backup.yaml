@@ -1,0 +1,34 @@
+- name: Backup Docker containers mount points
+  hosts: vms
+  gather_facts: false
+
+  vars:
+    machines:
+      dev_server_01:
+        name: devserver01
+
+  tasks:
+
+    - name: Create a directory to store the containers backup
+      ansible.builtin.file:
+        path: /mnt/backup_library/{{ name }} # retrieve the inventory variable for executing host
+        state: directory
+        mode: '0700'
+        owner: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}"
+        group: "{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+      become: true
+
+    - name: Get stats of the directory
+      ansible.builtin.stat:
+        path: /opt/jenkins
+      register: jenkins
+
+    - name: Jenkins
+      ansible.builtin.copy:
+        src: /opt/jenkins # does not end with "/", the directory itself with all contents is copied
+        dest: /mnt/backup_library/{{ name }}/
+        remote_src: yes # the source is on remote host
+        mode: preserve
+        directory_mode: preserve
+        force: true # Influence whether the remote file must always be replaced.
+      when: jenkins.stat.isdir is defined and jenkins.stat.isdir

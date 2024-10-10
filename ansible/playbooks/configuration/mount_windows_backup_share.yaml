@@ -1,0 +1,47 @@
+- name: Configure a backup folder as a Windows share mount
+  hosts: vms
+  gather_facts: false
+
+  tasks:
+
+    - name: Install CIFS Utils
+      ansible.builtin.yum:
+        name:
+          - cifs-utils
+        state: latest
+        update_cache: true
+      become: true
+
+    - name: Create a directory to store credentials
+      ansible.builtin.file:
+        path: "/opt/vault"
+        state: directory
+        mode: '0700'
+        owner: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}"
+        group: "{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+      become: true # elevate because is inside opt
+
+    - name: Create a credentials file for samba share access
+      ansible.builtin.copy:
+        dest: /opt/vault/.smbcredentials
+        content: |
+          username={{ lookup('ansible.builtin.env', 'win_share_user') }}
+          password={{ lookup('ansible.builtin.env', 'win_share_password') }}
+          domain=WORKGROUP
+        mode: '0600'
+
+    - name: Create a directory to store the mount
+      ansible.builtin.file:
+        path: /mnt/backup_library
+        state: directory
+        mode: '0700'
+      become: true
+
+    - name: Mount SMB volume and change fstab file
+      ansible.posix.mount:
+        src: "{{ lookup('ansible.builtin.env', 'backup_share_url') }}" # URL in the form //X.X.X.X/FOLDER
+        path: /mnt/backup_library
+        opts: "credentials=/opt/vault/.smbcredentials,uid={{ lookup('ansible.builtin.env', 'ssh_uid') }},gid={{ lookup('ansible.builtin.env', 'ssh_gid') }},x-systemd.automount"
+        fstype: cifs
+        state: mounted
+      become: true
