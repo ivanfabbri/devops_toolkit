@@ -2,11 +2,6 @@
   hosts: vms
   gather_facts: false
 
-  vars:
-    machines:
-      dev_server_01:
-        name: devserver01
-
   tasks:
 
     - name: Create a directory to store the containers backup
@@ -18,7 +13,7 @@
         group: "{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
       become: true
 
-    - name: Get stats of the directory
+    - name: Checks for Jenkins directory
       ansible.builtin.stat:
         path: /opt/jenkins
       register: jenkins
