@@ -89,4 +89,4 @@
           - /opt/semaphore/authorized-keys/:/authorized-keys:ro
           - /opt/semaphore/config/:/etc/semaphore:rw
         restart_policy: unless-stopped
-        become: true
+      become: true
