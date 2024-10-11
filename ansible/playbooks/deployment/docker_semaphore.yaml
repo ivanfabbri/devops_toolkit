@@ -51,7 +51,7 @@
         name: semaphore_mysql
         image: mysql:latest
         env:
-          MYSQL_RANDOM_ROOT_PASSWORD: yes
+          "MYSQL_RANDOM_ROOT_PASSWORD": yes
           MYSQL_DATABASE: semaphore
           MYSQL_USER: semaphore
           MYSQL_PASSWORD: secret-password
