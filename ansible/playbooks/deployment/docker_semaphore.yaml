@@ -84,7 +84,7 @@
           ANSIBLE_HOST_KEY_CHECKING: "false"  # (optional) change to true if you want to enable host key checking
         networks:
           - name: semaphore_network
-        user: "{{ uid }}:{{ gid }}"
+        user: root # need to be run as root 
         volumes:
           - /opt/semaphore/inventory/:/inventory:ro
           - /opt/semaphore/authorized-keys/:/authorized-keys:ro
