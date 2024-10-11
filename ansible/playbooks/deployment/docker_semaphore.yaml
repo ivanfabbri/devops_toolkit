@@ -83,10 +83,9 @@
           ANSIBLE_HOST_KEY_CHECKING: "false"  # (optional) change to true if you want to enable host key checking
         networks:
           - name: semaphore_network
-        user: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}:{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+        #user: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}:{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
         volumes:
           - /opt/semaphore/inventory/:/inventory:ro
           - /opt/semaphore/authorized-keys/:/authorized-keys:ro
           - /opt/semaphore/config/:/etc/semaphore:rw
         restart_policy: unless-stopped
-      become: true
