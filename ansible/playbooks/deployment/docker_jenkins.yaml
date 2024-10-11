@@ -31,7 +31,7 @@
           # Mounts the host machine’s docker socket to the Jenkins container due to docker-in-docker (use docker to create docker image inside jenkins docker container)
           - /var/run/docker.sock:/var/run/docker.sock
         privileged: yes
-        user: root
+        user: "{{ uid }}:{{ gid }}"
         networks:
           - name: devops_network
         restart_policy: unless-stopped
