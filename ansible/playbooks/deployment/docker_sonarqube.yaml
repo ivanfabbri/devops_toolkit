@@ -10,7 +10,7 @@
         name: devops_network
         state: present
 
-    - name: Create a directory to map Sonarqube information
+    - name: Create a directory to map Postgres information
       ansible.builtin.file:
         path: /opt/sonarqube/postgres
         state: directory
@@ -19,9 +19,27 @@
         group: "{{ gid }}"
       become: true # elevate because is inside opt
 
-    - name: Create a directory to map Sonarqube information
+    - name: Create a directory to map Sonarqube data
       ansible.builtin.file:
         path: /opt/sonarqube/data
+        state: directory
+        mode: '0700'
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
+      become: true # elevate because is inside opt
+
+    - name: Create a directory to map Sonarqube extensions
+      ansible.builtin.file:
+        path: /opt/sonarqube/extensions
+        state: directory
+        mode: '0700'
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
+      become: true # elevate because is inside opt
+
+    - name: Create a directory to map Sonarqube log
+      ansible.builtin.file:
+        path: /opt/sonarqube/log
         state: directory
         mode: '0700'
         owner: "{{ uid }}"
@@ -54,7 +72,9 @@
           SONAR_JDBC_USERNAME: sonar
           SONAR_JDBC_PASSWORD: sonar
         volumes:
-          #- /opt/sonarqube/data:/opt/sonarqube
+          - /opt/sonarqube/data:/opt/sonarqube/data
+          - /opt/sonarqube/extensions:/opt/sonarqube/extensions
+          - /opt/sonarqube/logs:/opt/sonarqube/logs
         networks:
           - name: devops_network
         restart_policy: unless-stopped
