@@ -26,7 +26,7 @@
         ports:
           - "3001:3000"
         volumes:
-          - /opt/grafana:/etc/grafana/
+          - grafana_data:/etc/grafana/
         networks:
           - name: monitoring_network
         user: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}:{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
