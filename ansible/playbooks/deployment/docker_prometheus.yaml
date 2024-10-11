@@ -4,9 +4,6 @@
   gather_facts: false
 
   tasks:
-    - name: Ensure the volume is created
-      community.docker.docker_volume:
-        name: prometheus_data
 
     - name: Ensure the monitoring network is created
       community.docker.docker_network:
@@ -18,8 +15,8 @@
         path: /opt/prometheus/config
         state: directory
         mode: '0700'
-        owner: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}"
-        group: "{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
       become: true # elevate because is inside opt
 
     - name: Create a directory to map Prometheus data
@@ -27,8 +24,8 @@
         path: /opt/prometheus/data
         state: directory
         mode: '0700'
-        owner: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}"
-        group: "{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
       become: true # elevate because is inside opt
 
     - name: Deploy Prometheus
