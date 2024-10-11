@@ -17,8 +17,8 @@
         path: "/opt/vault"
         state: directory
         mode: '0700'
-        owner: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}"
-        group: "{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
       become: true # elevate because is inside opt
 
     - name: Create a credentials file for samba share access
@@ -41,7 +41,7 @@
       ansible.posix.mount:
         src: "{{ lookup('ansible.builtin.env', 'backup_share_url') }}" # URL in the form //X.X.X.X/FOLDER
         path: /mnt/backup_library
-        opts: "credentials=/opt/vault/.smbcredentials,uid={{ lookup('ansible.builtin.env', 'ssh_uid') }},gid={{ lookup('ansible.builtin.env', 'ssh_gid') }},x-systemd.automount"
+        opts: "credentials=/opt/vault/.smbcredentials,uid={{ uid }},gid={{ gid }},x-systemd.automount"
         fstype: cifs
         state: mounted
       become: true
