@@ -23,5 +23,5 @@
         volumes:
           - /run/docker.sock:/var/run/docker.sock
           - /opt/portainer:/data
+        user: root # run as root to be able to connect to /var/run/docker.sock to monitor the localhost
         restart_policy: unless-stopped
-      become: true
