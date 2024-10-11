@@ -57,3 +57,48 @@
         directory_mode: preserve
         force: true # Influence whether the remote file must always be replaced.
       when: portainer.stat.isdir is defined and portainer.stat.isdir
+
+    - name: Checks for Prometheus directory
+      ansible.builtin.stat:
+        path: /opt/portainer
+      register: prometheus
+
+    - name: Prometheus
+      ansible.builtin.copy:
+        src: /opt/prometheus # does not end with "/", the directory itself with all contents is copied
+        dest: /mnt/backup_library/{{ name }}/
+        remote_src: yes # the source is on remote host
+        mode: preserve
+        directory_mode: preserve
+        force: true # Influence whether the remote file must always be replaced.
+      when: prometheus.stat.isdir is defined and prometheus.stat.isdir
+
+    - name: Checks for Semaphore directory
+      ansible.builtin.stat:
+        path: /opt/semaphore
+      register: semaphore
+
+    - name: Semaphore
+      ansible.builtin.copy:
+        src: /opt/semaphore # does not end with "/", the directory itself with all contents is copied
+        dest: /mnt/backup_library/{{ name }}/
+        remote_src: yes # the source is on remote host
+        mode: preserve
+        directory_mode: preserve
+        force: true # Influence whether the remote file must always be replaced.
+      when: semaphore.stat.isdir is defined and semaphore.stat.isdir
+
+    - name: Checks for Sonarqube directory
+      ansible.builtin.stat:
+        path: /opt/sonarqube
+      register: sonarqube
+
+    - name: Sonarqube
+      ansible.builtin.copy:
+        src: /opt/sonarqube # does not end with "/", the directory itself with all contents is copied
+        dest: /mnt/backup_library/{{ name }}/
+        remote_src: yes # the source is on remote host
+        mode: preserve
+        directory_mode: preserve
+        force: true # Influence whether the remote file must always be replaced.
+      when: sonarqube.stat.isdir is defined and sonarqube.stat.isdir
