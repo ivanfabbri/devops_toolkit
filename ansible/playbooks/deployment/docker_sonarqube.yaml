@@ -47,7 +47,7 @@
     - name: Deploy Sonarqube
       community.docker.docker_container:
         name: sonarqube
-        image: "sonarqube:community"
+        image: sonarqube:community
         ports:
           - "9000:9000"
         env:
@@ -55,7 +55,7 @@
           SONAR_JDBC_USERNAME: sonar
           SONAR_JDBC_PASSWORD: sonar
         volumes:
-          - /opt/sonarqube/data:/opt/sonarqube
+          #- /opt/sonarqube/data:/opt/sonarqube
         networks:
           - name: devops_network
         user: root
