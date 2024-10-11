@@ -40,6 +40,7 @@
           - /opt/sonarqube/postgres:/var/lib/postgresql
         networks:
           - name: devops_network
+        user: root
         restart_policy: unless-stopped
         state: started
 
