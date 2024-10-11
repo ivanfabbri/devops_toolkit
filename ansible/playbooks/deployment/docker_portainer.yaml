@@ -1,13 +1,9 @@
 ---
-- name: Deploy portainer-ce latest
+- name: Deploy Portainer Community Edition
   hosts: controller
   gather_facts: false
 
   tasks:
-
-    - name: Create new volume
-      community.docker.docker_volume:
-        name: portainer-data
 
     - name: Create a directory to map Portainer information
       ansible.builtin.file:
@@ -29,3 +25,4 @@
           - /opt/portainer:/data
         user: "{{ uid }}:{{ gid }}"
         restart_policy: unless-stopped
+      become: true
