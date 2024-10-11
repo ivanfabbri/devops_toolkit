@@ -4,9 +4,19 @@
   gather_facts: false
 
   tasks:
+
     - name: Create new volume
       community.docker.docker_volume:
         name: portainer-data
+
+    - name: Create a directory to map Portainer information
+      ansible.builtin.file:
+        path: /opt/portainer
+        state: directory
+        mode: '0700'
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
+      become: true # elevate because is inside opt
 
     - name: Deploy portainer
       community.docker.docker_container:
@@ -16,5 +26,5 @@
           - "9443:9443"
         volumes:
           - /run/docker.sock:/var/run/docker.sock
-          - portainer-data:/data
+          - /opt/portainer:/data
         restart_policy: unless-stopped

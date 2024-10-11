@@ -9,8 +9,8 @@
         path: /mnt/backup_library/{{ name }} # retrieve the inventory variable for executing host
         state: directory
         mode: '0700'
-        owner: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}"
-        group: "{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
       become: true
 
     - name: Checks for Jenkins directory

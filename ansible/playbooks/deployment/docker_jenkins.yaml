@@ -10,8 +10,8 @@
         path: /opt/jenkins/home
         state: directory
         mode: '0700'
-        owner: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}"
-        group: "{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
       become: true # elevate because is inside opt
 
     - name: Ensure the devops network is created
