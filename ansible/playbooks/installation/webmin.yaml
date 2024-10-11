@@ -1,7 +1,7 @@
 ---
 - name: Install webmin
   gather_facts: false
-  hosts: nodes
+  hosts: vms
 
   tasks:
 
@@ -10,8 +10,8 @@
         path: "/opt/webmin"
         state: directory
         mode: '0700'
-        owner: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}"
-        group: "{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
       become: true # elevate because is inside opt
 
     - name: Create a directory to store webmin scripts for installation
@@ -66,5 +66,5 @@
         append_newline: true
         prepend_newline: true
         block: |
-          referers={{ lookup('ansible.builtin.env', 'webmin_url') }}
+          referers={{ name }}.{{ lookup('ansible.builtin.env', 'domain_url') }}
       become: true
