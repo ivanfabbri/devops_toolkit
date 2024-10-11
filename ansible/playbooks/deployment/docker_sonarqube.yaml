@@ -37,9 +37,9 @@
         group: "{{ gid }}"
       become: true # elevate because is inside opt
 
-    - name: Create a directory to map Sonarqube log
+    - name: Create a directory to map Sonarqube logs
       ansible.builtin.file:
-        path: /opt/sonarqube/log
+        path: /opt/sonarqube/logs
         state: directory
         mode: '0700'
         owner: "{{ uid }}"
