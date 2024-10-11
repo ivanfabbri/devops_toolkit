@@ -67,7 +67,7 @@
         name: semaphore
         image: semaphoreui/semaphore:latest
         ports:
-          - "3000:3000"
+          - "3002:3000"
         env:
           SEMAPHORE_DB_USER: semaphore
           SEMAPHORE_DB_PASS: secret-password
