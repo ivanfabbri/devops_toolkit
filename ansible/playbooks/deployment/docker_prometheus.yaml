@@ -13,6 +13,24 @@
         name: monitoring_network
         state: present
 
+    - name: Create a directory to map Prometheus config
+      ansible.builtin.file:
+        path: /opt/prometheus/config
+        state: directory
+        mode: '0700'
+        owner: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}"
+        group: "{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+      become: true # elevate because is inside opt
+
+    - name: Create a directory to map Prometheus data
+      ansible.builtin.file:
+        path: /opt/prometheus/data
+        state: directory
+        mode: '0700'
+        owner: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}"
+        group: "{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+      become: true # elevate because is inside opt
+
     - name: Deploy Prometheus
       community.docker.docker_container:
         name: prometheus
@@ -20,9 +38,10 @@
         ports:
           - "9090:9090"
         volumes:
-          - "{{ lookup('ansible.builtin.env', 'prometheus_config') }}:/etc/prometheus/prometheus.yml"
-          - prometheus_data:/etc/prometheus
+          - /opt/prometheus/config:/etc/prometheus # map the configuration file
+          - /opt/prometheus/data:/prometheus
         networks:
           - name: monitoring_network
+        user: "{{ uid }}:{{ gid }}"
         restart_policy: unless-stopped
         state: started

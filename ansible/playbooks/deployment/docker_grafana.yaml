@@ -15,8 +15,8 @@
         path: /opt/grafana
         state: directory
         mode: '0700'
-        owner: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}"
-        group: "{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
       become: true # elevate because is inside opt
 
     - name: Deploy Grafana
@@ -29,6 +29,6 @@
           - /opt/grafana:/etc/grafana/
         networks:
           - name: monitoring_network
-        user: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}:{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+        user: "{{ uid }}:{{ gid }}"
         restart_policy: unless-stopped
         state: started
