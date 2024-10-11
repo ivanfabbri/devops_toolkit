@@ -12,7 +12,7 @@
 
     - name: Create a directory to map MySQL information
       ansible.builtin.file:
-        path: /opt/semaphore/mysql/data
+        path: /opt/semaphore/mysql/
         state: directory
         mode: '0700'
         owner: "{{ uid }}"
@@ -58,7 +58,7 @@
         networks:
           - name: semaphore_network
         volumes:
-          - /opt/semaphore/mysql/data:/var/lib/mysql
+          - /opt/semaphore/mysql:/var/lib/mysql
         user: "{{ uid }}:{{ gid }}"
         restart_policy: unless-stopped
 
