@@ -1,5 +1,5 @@
 ---
-- name: Deploy Prometheus latest
+- name: Deploy Prometheus
   hosts: controller
   gather_facts: false
 
