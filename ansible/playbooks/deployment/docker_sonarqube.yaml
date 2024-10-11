@@ -58,7 +58,7 @@
           #- /opt/sonarqube/data:/opt/sonarqube
         networks:
           - name: devops_network
-        user: root
+        user: "{{ uid }}:{{ gid }}"
         restart_policy: unless-stopped
         state: started
 
