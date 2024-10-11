@@ -4,38 +4,20 @@
   gather_facts: false
 
   tasks:
-    - name: Ensure the volume is created
-      community.docker.docker_volume:
-        name: sonarqube_db
-
-    - name: Ensure the volume is created
-      community.docker.docker_volume:
-        name: sonarqube_db_data
-
-    - name: Ensure the volume is created
-      community.docker.docker_volume:
-        name: sonarqube_conf
-
-    - name: Ensure the volume is created
-      community.docker.docker_volume:
-        name: sonarqube_data
-
-    - name: Ensure the volume is created
-      community.docker.docker_volume:
-        name: sonarqube_extensions
-
-    - name: Ensure the volume is created
-      community.docker.docker_volume:
-        name: sonarqube_logs
-
-    - name: Ensure the volume is created
-      community.docker.docker_volume:
-        name: sonarqube_temp
 
     - name: Ensure the devops network is created
       community.docker.docker_network:
         name: devops_network
         state: present
+
+    - name: Create a directory to map Sonarqube information
+      ansible.builtin.file:
+        path: /opt/sonarqube/postgres
+        state: directory
+        mode: '0700'
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
+      become: true # elevate because is inside opt
 
     - name: Create a directory to map Sonarqube information
       ansible.builtin.file:
