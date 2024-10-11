@@ -37,6 +37,15 @@
         name: devops_network
         state: present
 
+    - name: Create a directory to map Sonarqube information
+      ansible.builtin.file:
+        path: /opt/sonarqube/data
+        state: directory
+        mode: '0700'
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
+      become: true # elevate because is inside opt
+
     - name: Deploy Sonarqube Postgres database
       community.docker.docker_container:
         name: sonarqube_postgres
@@ -46,11 +55,7 @@
           POSTGRES_PASSWORD: sonar
           POSTGRES_DB: sonarqube_db
         volumes:
-          - sonarqube_conf:/opt/sonarqube/conf
-          - sonarqube_data:/opt/sonarqube/data
-          - sonarqube_extensions:/opt/sonarqube/extensions
-          - sonarqube_logs:/opt/sonarqube/logs
-          - sonarqube_temp:/opt/sonarqube/temp
+          - /opt/sonarqube/postgres:/var/lib/postgresql
         networks:
           - name: devops_network
         restart_policy: unless-stopped
@@ -67,8 +72,7 @@
           SONAR_JDBC_USERNAME: sonar
           SONAR_JDBC_PASSWORD: sonar
         volumes:
-          - sonarqube_db:/var/lib/postgresql
-          - sonarqube_db_data:/var/lib/postgresql/data
+          - /opt/sonarqube/data:/opt/sonarqube
         networks:
           - name: devops_network
         restart_policy: unless-stopped
