@@ -59,7 +59,7 @@
           - name: semaphore_network
         volumes:
           - /opt/semaphore/mysql:/var/lib/mysql
-        user: "{{ uid }}:{{ gid }}"
+        user: root # need to be run as root 
         restart_policy: unless-stopped
 
     - name: Deploy Semaphore
