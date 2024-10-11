@@ -1,6 +1,7 @@
 - name: Backup Docker containers mount points
   hosts: vms
   gather_facts: false
+  become: true
 
   tasks:
 
