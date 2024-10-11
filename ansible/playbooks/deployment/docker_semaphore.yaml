@@ -1,0 +1,91 @@
+---
+- name: Deploy Semaphore latest
+  hosts: controller
+  gather_facts: false
+
+  tasks:
+
+    - name: Ensure the network is created
+      community.docker.docker_network:
+        name: semaphore_network
+        state: present
+
+    - name: Create a directory to map MySQL information
+      ansible.builtin.file:
+        path: /opt/semaphore/mysql/data
+        state: directory
+        mode: '0700'
+        owner: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}"
+        group: "{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+      become: true # elevate because is inside opt
+
+    - name: Create a directory to map Semaphore inventory
+      ansible.builtin.file:
+        path: /opt/semaphore/inventory/
+        state: directory
+        mode: '0700'
+        owner: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}"
+        group: "{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+      become: true # elevate because is inside opt
+
+    - name: Create a directory to map Semaphore keys
+      ansible.builtin.file:
+        path: /opt/semaphore/authorized-keys/
+        state: directory
+        mode: '0700'
+        owner: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}"
+        group: "{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+      become: true # elevate because is inside opt
+
+    - name: Create a directory to map Semaphore config
+      ansible.builtin.file:
+        path: /opt/semaphore/config/
+        state: directory
+        mode: '0700'
+        owner: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}"
+        group: "{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+      become: true # elevate because is inside opt
+
+    - name: Deploy MySQL
+      community.docker.docker_container:
+        name: semaphore_mysql
+        image: mysql:latest
+        env:
+          MYSQL_RANDOM_ROOT_PASSWORD: yes
+          MYSQL_DATABASE: semaphore
+          MYSQL_USER: semaphore
+          MYSQL_PASSWORD: secret-password
+        networks:
+          - name: semaphore_network
+        volumes:
+          - /opt/semaphore/mysql/data:/var/lib/mysql
+        restart_policy: unless-stopped
+
+    - name: Deploy Semaphore
+      community.docker.docker_container:
+        name: semaphore
+        image: semaphoreui/semaphore:latest
+        ports:
+          - "3001:3000"
+        env:
+          SEMAPHORE_DB_USER: semaphore
+          SEMAPHORE_DB_PASS: secret-password
+          SEMAPHORE_DB_HOST: semaphore_mysql
+          SEMAPHORE_DB_PORT: "3306"
+          SEMAPHORE_DB_DIALECT: mysql
+          SEMAPHORE_DB: semaphore
+          SEMAPHORE_PLAYBOOK_PATH: /tmp/semaphore/
+          SEMAPHORE_ADMIN_PASSWORD: secret-admin-password  # change!
+          SEMAPHORE_ADMIN_NAME: admin
+          SEMAPHORE_ADMIN_EMAIL: admin@localhost
+          SEMAPHORE_ADMIN: admin
+          SEMAPHORE_ACCESS_KEY_ENCRYPTION: change-this-key  # add to your access key encryption !
+          ANSIBLE_HOST_KEY_CHECKING: false  # (optional) change to true if you want to enable host key checking
+        networks:
+          - name: semaphore_network
+        user: "{{ lookup('ansible.builtin.env', 'ssh_uid') }}:{{ lookup('ansible.builtin.env', 'ssh_gid') }}"
+        volumes:
+          - /opt/semaphore/inventory/:/inventory:ro
+          - /opt/semaphore/authorized-keys/:/authorized-keys:ro
+          - /opt/semaphore/config/:/etc/semaphore:rw
+        restart_policy: unless-stopped
