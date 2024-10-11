@@ -37,10 +37,9 @@
           POSTGRES_PASSWORD: sonar
           POSTGRES_DB: sonarqube_db
         volumes:
-          - /opt/sonarqube/postgres:/var/lib/postgresql
+          - /opt/sonarqube/postgres:/var/lib/postgresql/data
         networks:
           - name: devops_network
-        user: root
         restart_policy: unless-stopped
         state: started
 
