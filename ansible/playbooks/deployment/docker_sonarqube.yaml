@@ -74,11 +74,12 @@
         volumes:
           - /opt/sonarqube/data:/opt/sonarqube/data
           - /opt/sonarqube/extensions:/opt/sonarqube/extensions
-          #- /opt/sonarqube/logs:/opt/sonarqube/logs
+          - /opt/sonarqube/logs:/opt/sonarqube/logs
         networks:
           - name: devops_network
         restart_policy: unless-stopped
         state: started
+      become: true
 
     - name: Allow traffic in default zone on port 9000/tcp for metrics endpoint
       ansible.posix.firewalld:
