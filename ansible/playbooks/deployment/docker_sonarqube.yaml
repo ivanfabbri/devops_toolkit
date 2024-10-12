@@ -46,6 +46,15 @@
         group: "{{ gid }}"
       become: true # elevate because is inside opt
 
+    - name: Create a directory to map Sonarqube temp
+      ansible.builtin.file:
+        path: /opt/sonarqube/temp
+        state: directory
+        mode: '0700'
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
+      become: true # elevate because is inside opt
+
     - name: Deploy Sonarqube Postgres database
       community.docker.docker_container:
         name: sonarqube_postgres
@@ -75,8 +84,10 @@
           - /opt/sonarqube/data:/opt/sonarqube/data
           - /opt/sonarqube/extensions:/opt/sonarqube/extensions
           - /opt/sonarqube/logs:/opt/sonarqube/logs
+          - /opt/sonarqube/temp:/opt/sonarqube/temp
         networks:
           - name: devops_network
+        user: root
         restart_policy: unless-stopped
         state: started
 
