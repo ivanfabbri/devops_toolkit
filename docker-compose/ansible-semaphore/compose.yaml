@@ -36,8 +36,6 @@ services:
       - SEMAPHORE_ADMIN=admin
       - SEMAPHORE_ACCESS_KEY_ENCRYPTION=change-this-key  # add to your access key encryption !
       - ANSIBLE_HOST_KEY_CHECKING=false  # (optional) change to true if you want to enable host key checking
-      - PUID="1000"
-      - PGID="1000"
     volumes:
       - /opt/semaphore/inventory/:/inventory:ro
       - /opt/semaphore/authorized-keys/:/authorized-keys:ro
