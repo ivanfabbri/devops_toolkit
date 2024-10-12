@@ -37,9 +37,9 @@ services:
       - SEMAPHORE_ACCESS_KEY_ENCRYPTION=change-this-key  # add to your access key encryption !
       - ANSIBLE_HOST_KEY_CHECKING=false  # (optional) change to true if you want to enable host key checking
     volumes:
-      - /opt/semaphore/inventory/:/inventory:ro
-      - /opt/semaphore/authorized-keys/:/authorized-keys:ro
-      - /opt/semaphore/config/:/etc/semaphore:rw
+      - /opt/semaphore/inventory/:/inventory
+      - /opt/semaphore/authorized-keys/:/authorized-keys
+      - /opt/semaphore/config/:/etc/semaphore
     networks:
       - semaphore-network
     user: root
