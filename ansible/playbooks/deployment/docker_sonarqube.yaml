@@ -74,7 +74,7 @@
         volumes:
           - /opt/sonarqube/data:/opt/sonarqube/data
           - /opt/sonarqube/extensions:/opt/sonarqube/extensions
-          - /opt/sonarqube/logs:/opt/sonarqube/logs
+          #- /opt/sonarqube/logs:/opt/sonarqube/logs
         networks:
           - name: devops_network
         restart_policy: unless-stopped
