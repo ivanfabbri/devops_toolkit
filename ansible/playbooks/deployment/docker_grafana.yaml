@@ -29,6 +29,5 @@
           - /opt/grafana:/etc/grafana/
         networks:
           - name: monitoring_network
-        user: root
         restart_policy: unless-stopped
         state: started
