@@ -77,7 +77,6 @@
           - /opt/sonarqube/logs:/opt/sonarqube/logs
         networks:
           - name: devops_network
-        user: "{{ uid }}:{{ gid }}"
         restart_policy: unless-stopped
         state: started
 
