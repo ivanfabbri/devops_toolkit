@@ -12,9 +12,9 @@ services:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_DATABASE=semaphore_db
       - MYSQL_USER=semaphore
-      - MYSQL_PASSWORD=secret-password  # change!
+      - MYSQL_PASSWORD=${mysql_password} # add environment variable
     networks:
-      - smnetwork
+      - sm_network
     restart: unless-stopped
 
   semaphore:
@@ -24,13 +24,13 @@ services:
       - 3000:3000
     environment:
       - SEMAPHORE_DB_USER=semaphore
-      - SEMAPHORE_DB_PASS=secret-password  # change!
+      - SEMAPHORE_DB_PASS=${mysql_password} # add environment variable
       - SEMAPHORE_DB_HOST=semaphore_mysql
       - SEMAPHORE_DB_PORT=3306
       - SEMAPHORE_DB_DIALECT=mysql
       - SEMAPHORE_DB=semaphore_db
       - SEMAPHORE_PLAYBOOK_PATH=/tmp/semaphore/
-      - SEMAPHORE_ADMIN_PASSWORD=secret-admin-password  # change!
+      - SEMAPHORE_ADMIN_PASSWORD=${admin_password} # add environment variable
       - SEMAPHORE_ADMIN_NAME=admin
       - SEMAPHORE_ADMIN_EMAIL=admin@localhost
       - SEMAPHORE_ADMIN=admin
@@ -38,11 +38,11 @@ services:
       - ANSIBLE_HOST_KEY_CHECKING=false  # (optional) change to true if you want to enable host key checking
       - TZ=America/Sao_Paulo
     networks:
-      - smnetwork
+      - sm_network
     user: root
     restart: unless-stopped
     depends_on:
       - semaphore_mysql
 
 networks:
-  smnetwork:
+  sm_network:
