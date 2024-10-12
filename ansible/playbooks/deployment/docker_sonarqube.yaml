@@ -87,7 +87,6 @@
           - /opt/sonarqube/temp:/opt/sonarqube/temp
         networks:
           - name: devops_network
-        user: root
         restart_policy: unless-stopped
         state: started
 
