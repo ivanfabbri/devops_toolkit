@@ -42,6 +42,7 @@ services:
       - /opt/semaphore/config/:/etc/semaphore:rw
     networks:
       - semaphore-network
+    user: root
     restart: unless-stopped
     depends_on:
       - semaphore_mysql
