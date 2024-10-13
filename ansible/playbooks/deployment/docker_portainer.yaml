@@ -23,8 +23,4 @@
         volumes:
           - /run/docker.sock:/var/run/docker.sock
           - /opt/portainer:/data
-        #command:
-        #    --ssl
-        #    --sslcert /certs/ivanfabbri.pem
-        #    --sslkey /certs/ivanfabbri_privkey.pem
         restart_policy: unless-stopped
