@@ -54,6 +54,12 @@
         permanent: true
         state: enabled
 
+    - name: Reload firewalld service
+      ansible.builtin.service:
+        name: firewalld
+        state: reloaded
+      become: true # should be run as root
+
     - name: Start docker service, if not started
       ansible.builtin.service:
         name: docker
