@@ -83,6 +83,7 @@
       ansible.builtin.copy:
         src: /opt/webmin/ssl/miniserv.pem
         dest: /etc/webmin/miniserv.pem
+        remote_src: true
         owner: root
         group: root
         mode: '0600'
