@@ -17,13 +17,13 @@
     - name: Deploy portainer
       community.docker.docker_container:
         name: portainer
-        image: "portainer/portainer-ce:latest"
+        image: portainer/portainer-ce:latest
         ports:
           - "9443:9443"
         volumes:
           - /run/docker.sock:/var/run/docker.sock
           - /opt/portainer:/data
-        command:
-            --sslcert /certs/ivanfabbri.pem
-            --sslkey /certs/ivanfabbri_privkey.pem
+        #command:
+        #    --sslcert /certs/ivanfabbri.pem
+        #    --sslkey /certs/ivanfabbri_privkey.pem
         restart_policy: unless-stopped
