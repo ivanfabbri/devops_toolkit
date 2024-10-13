@@ -77,7 +77,7 @@
       become: true
 
     - name: Return motd to registered var
-      ansible.builtin.command: cat {{ lookup('ansible.builtin.env', 'ssl_key') }} {{ lookup('ansible.builtin.env', 'ssl_cert') }} > /opt/webmin/ssl/miniserv.pem
+      ansible.builtin.command: "cat {{ lookup('ansible.builtin.env', 'ssl_key') }} {{ lookup('ansible.builtin.env', 'ssl_cert') }} > /opt/webmin/ssl/miniserv.pem"
 
     - name: Copy the file created with the certificates to replace the Webmin self signed certificates
       ansible.builtin.copy:
