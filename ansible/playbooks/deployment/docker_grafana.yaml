@@ -29,6 +29,6 @@
           - /opt/grafana:/var/lib/grafana
         networks:
           - name: monitoring_network
-        #user: root # should be run as root
+        user: "{{ uid }}:{{ gid }}"
         restart_policy: unless-stopped
         state: started
