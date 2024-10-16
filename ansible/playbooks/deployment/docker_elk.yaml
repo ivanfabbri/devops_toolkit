@@ -1,0 +1,34 @@
+---
+- name: Deploy ELK stack - Elastic Search, Logstash Kibana latest
+  hosts: controller
+  gather_facts: false
+
+  tasks:
+
+    - name: Ensure the monitoring network is created
+      community.docker.docker_network:
+        name: monitoring_network
+        state: present
+
+    - name: Create a directory to map Grafana information
+      ansible.builtin.file:
+        path: /opt/grafana
+        state: directory
+        mode: '0700'
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
+      become: true # elevate because is inside opt
+
+    - name: Deploy Grafana
+      community.docker.docker_container:
+        name: grafana
+        image: grafana/grafana:latest
+        ports:
+          - "3001:3000"
+        volumes:
+          - /opt/grafana:/var/lib/grafana
+        networks:
+          - name: monitoring_network
+        user: "{{ uid }}:{{ gid }}"
+        restart_policy: unless-stopped
+        state: started
