@@ -1,6 +1,6 @@
 ---
 - name: Deploy Jenkins Agent as Docker container
-  hosts: node
+  hosts: nodes
   gather_facts: false
 
   tasks:
