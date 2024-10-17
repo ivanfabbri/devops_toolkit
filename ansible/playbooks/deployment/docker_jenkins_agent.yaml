@@ -17,7 +17,7 @@
         ports:
           - "422:22"
         env:
-          - JENKINS_AGENT_SSH_PUBKEY: "{{ lookup('ansible.builtin.env', 'jenkins_controller_ssh_key') }}"
+          JENKINS_AGENT_SSH_PUBKEY: "{{ lookup('ansible.builtin.env', 'jenkins_controller_ssh_key') }}"
         networks:
           - name: devops_network
         user: "{{ uid }}:{{ gid }}"
