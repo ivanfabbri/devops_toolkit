@@ -29,6 +29,7 @@
           - /opt/grafana:/var/lib/grafana
         env:
           # SSO with Authentik provider
+          GF_SERVER_ROOT_URL: "{{ lookup('ansible.builtin.env', 'grafana_domain_url') }}"
           GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
           GF_AUTH_GENERIC_OAUTH_NAME: "authentik"
           GF_AUTH_GENERIC_OAUTH_CLIENT_ID: "{{ lookup('ansible.builtin.env', 'grafana_sso_client_id') }}"
