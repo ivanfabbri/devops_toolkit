@@ -5,6 +5,15 @@
 
   tasks:
 
+    - name: Create a directory to map Jenkins Agent information
+      ansible.builtin.file:
+        path: /opt/jenkins/agent
+        state: directory
+        mode: '0700'
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
+      become: true # elevate because is inside opt
+
     - name: Ensure the devops network is created
       community.docker.docker_network:
         name: devops_network
@@ -16,10 +25,12 @@
         image: jenkins/ssh-agent:latest-jdk21
         ports:
           - "4422:22"
+        volumes:
+          - /opt/jenkins/agent:/home/jenkins/agent
         env:
           JENKINS_AGENT_SSH_PUBKEY: "{{ lookup('ansible.builtin.env', 'jenkins_controller_ssh_key') }}"
         networks:
           - name: devops_network
-        user: root
+        #user: root
         restart_policy: unless-stopped
         state: started
