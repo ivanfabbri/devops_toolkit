@@ -23,6 +23,7 @@
       community.docker.docker_container:
         name: jenkins_agent
         image: jenkins/ssh-agent:latest-jdk21
+        run: apt-get install -qy maven
         ports:
           - "4422:22"
         volumes:
