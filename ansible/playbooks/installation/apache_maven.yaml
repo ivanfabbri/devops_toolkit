@@ -1,7 +1,7 @@
 
 - name: Install Apache Maven
   gather_facts: false
-  hosts: nodes
+  hosts: controller
   become: true
 
   tasks:
