@@ -23,7 +23,7 @@
       community.docker.docker_container:
         name: jenkins_agent
         image: jenkins/ssh-agent:latest-jdk21
-        command: ["apt-get update && apt-get install -y maven"]
+        #command: ["apt-get update && apt-get install -y maven"]
         ports:
           - "4422:22"
         volumes:
@@ -33,6 +33,6 @@
           JENKINS_AGENT_SSH_PUBKEY: "{{ lookup('ansible.builtin.env', 'jenkins_controller_ssh_key') }}"
         networks:
           - name: devops_network
-        user: root
+        #user: root
         restart_policy: unless-stopped
         state: started
