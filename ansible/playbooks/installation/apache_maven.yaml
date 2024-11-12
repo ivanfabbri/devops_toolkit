@@ -1,0 +1,14 @@
+
+- name: Install Apache Maven
+  gather_facts: false
+  hosts: nodes
+  become: true
+
+  tasks:
+
+    - name: Install Apache Maven
+      ansible.builtin.yum:
+        name:
+          - maven
+        state: latest
+        update_cache: true
