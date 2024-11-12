@@ -10,5 +10,5 @@
       ansible.builtin.yum:
         name:
           - maven
-        state: latest
+        state: absent
         update_cache: true
