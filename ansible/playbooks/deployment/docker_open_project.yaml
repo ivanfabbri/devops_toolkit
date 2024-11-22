@@ -37,8 +37,8 @@
         name: "{{ item }}"
         state: absent
       loop:
-        - "{{ postgres_container_name }}"
         - "{{ openproject_container_name }}"
+        - "{{ postgres_container_name }}"        
 
     - name: Remove the existing OpenProject image if it exists
       community.docker.docker_image:
