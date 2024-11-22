@@ -32,10 +32,13 @@
         - "{{ openproject_database_dir }}"
       become: true # elevate because is inside opt
 
-    - name: Stop and remove the existing OpenProject container if it exists
+    - name: Stop and remove the existing OpenProject containers if it exists
       community.docker.docker_container:
         name: "{{ openproject_container_name }}"
         state: absent
+      loop:
+        - "{{ postgres_container_name }}"
+        - "{{ openproject_container_name }}"
 
     - name: Remove the existing OpenProject image if it exists
       community.docker.docker_image:
@@ -43,10 +46,13 @@
         source: local
         state: absent
 
-    - name: Pull the latest OpenProject image
+    - name: Pull the latest Docker images
       community.docker.docker_image:
-        name: "{{ openproject_image }}"
+        name: "{{ item }}"
         source: pull
+      loop:
+        - "{{ openproject_image }}"
+        - "{{ postgres_image }}"
 
     - name: Deploy PostgreSQL container
       community.docker.docker_container:
