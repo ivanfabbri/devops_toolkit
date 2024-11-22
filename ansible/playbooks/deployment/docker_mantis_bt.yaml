@@ -1,0 +1,91 @@
+- name: Deploy Mantis Bug Tracker
+  hosts: controller
+  gather_facts: false
+
+  vars:
+
+    mantis_container_name: mantis
+    mantis_image: openproject/community:13-slim
+    mysql_container_name: mantis_mysql
+    mysql_image: mysql:latest
+
+    # Volume mapping
+    mantis_config_dir: /opt/mantis/config
+    mantis_database_dir: /opt/mantis/database
+
+  tasks:
+
+    - name: Ensure the network is created
+      community.docker.docker_network:
+        name: mantis_network
+        state: present
+
+    - name: Create a directory to map Docker volumes
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0700'
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
+      loop:
+        - "{{ openproject_assets_dir }}"
+        - "{{ openproject_database_dir }}"
+      become: true # elevate because is inside opt
+
+    - name: Stop and remove the existing Mantis containers if it exists
+      community.docker.docker_container:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ mysql_container_name }}"
+        - "{{ mantis_container_name }}"
+
+    - name: Remove the existing Mantis image if it exists
+      community.docker.docker_image:
+        name: "{{ mantis_image }}"
+        source: local
+        state: absent
+
+    - name: Pull the latest Docker images
+      community.docker.docker_image:
+        name: "{{ item }}"
+        source: pull
+      loop:
+        - "{{ mantis_image }}"
+        - "{{ mysql_image }}"
+
+    - name: Deploy MySQL container
+      community.docker.docker_container:
+        name: "{{ mysql_container_name }}"
+        image: "{{ mysql_image }}"
+        networks:
+          - name: mantis_network
+        env:
+          MYSQL_PASSWORD: "{{ lookup('env', 'mantis_db_password') }}"
+          MYSQL_USER: mantis
+          MYSQL_ROOT_PASSWORD: "{{ lookup('env', 'mantis_db_root_password') }}"
+          MYSQL_DATABASE: mantis_db
+        volumes:
+          - "{{ mantis_database_dir }}:/var/lib/mysql"
+        state: started
+
+    - name: Deploy Mantis
+      community.docker.docker_container:
+        name: "{{ mantis_container_name }}"
+        image: "{{ mantis_image }}"
+        ports:
+          - "8082:80"
+        env:
+          MANTIS_DB_HOST: "{{ mysql_container_name }}"
+          MANTIS_DB_TYPE: mysqli
+          MANTIS_DB_NAME: mantis_db
+          MANTIS_DB_USER: mantis
+          MANTIS_DB_PASSWORD: "{{ lookup('env', 'mantis_db_password') }}"
+        volumes:
+          - "{{ mantis_config_dir }}:/var/www/html/config"
+        networks:
+          - name: mantis_network
+        restart_policy: unless-stopped
+        state: started
+
+    

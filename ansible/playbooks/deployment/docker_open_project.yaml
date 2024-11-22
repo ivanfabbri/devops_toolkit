@@ -34,7 +34,7 @@
 
     - name: Stop and remove the existing OpenProject containers if it exists
       community.docker.docker_container:
-        name: "{{ openproject_container_name }}"
+        name: "{{ item }}"
         state: absent
       loop:
         - "{{ postgres_container_name }}"
