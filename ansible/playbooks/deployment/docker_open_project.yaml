@@ -71,7 +71,7 @@
         name: "{{ openproject_container_name }}"
         image: "{{ openproject_image }}"
         ports:
-          - "8080:80"
+          - "8081:80"
         env:
           SECRET_KEY_BASE: "{{ lookup('env', 'openproject_secret_key') }}"
           DATABASE_URL: "postgresql://openproject:{{ lookup('env', 'openproject_db_password') }}@{{ postgres_container_name }}:5432/openproject_db"
