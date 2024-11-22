@@ -65,6 +65,8 @@
           POSTGRES_USER: openproject
           POSTGRES_PASSWORD: "{{ lookup('env', 'openproject_db_password') }}"
           POSTGRES_DB: openproject_db
+        volumes:
+          - "{{ openproject_database_dir }}:/var/lib/postgresql/data"
         state: started
 
     - name: Deploy OpenProject
@@ -75,12 +77,13 @@
           - "8081:80"
         env:
           SECRET_KEY_BASE: "{{ lookup('env', 'openproject_secret_key') }}"
-          DATABASE_URL: "postgresql://openproject:{{ lookup('env', 'openproject_db_password') }}@openproject_postgres:5432/openproject_db"
+          OPENPROJECT_DB_URL: "postgresql://openproject_postgres:5432/openproject_db"
           OPENPROJECT_HOST__NAME: "{{ lookup('env', 'openproject_domain') }}"
           OPENPROJECT_HTTPS: "false"
+          OPENPROJECT_DB_USERNAME: openproject
+          OPENPROJECT_DB_PASSWORD: "{{ lookup('env', 'openproject_db_password') }}"
         volumes:
           - "{{ openproject_assets_dir }}:/var/openproject/assets"
-          - "{{ openproject_database_dir }}:/var/lib/postgresql"
         networks:
           - name: openproject_network
         restart_policy: unless-stopped
