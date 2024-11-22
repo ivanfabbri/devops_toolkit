@@ -7,7 +7,7 @@
     openproject_container_name: openproject
     openproject_image: openproject/community:latest
     postgres_container_name: openproject_postgres
-    postgres_image: openproject/community:latest
+    postgres_image: postgres:latest
 
     # Volume mapping
     openproject_assets_dir: /opt/openproject/assets
