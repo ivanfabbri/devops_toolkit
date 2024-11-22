@@ -5,7 +5,7 @@
   vars:
 
     mantis_container_name: mantis
-    mantis_image: openproject/community:13-slim
+    mantis_image: mantisbt/mantisbt:latest
     mysql_container_name: mantis_mysql
     mysql_image: mysql:latest
 
@@ -28,8 +28,8 @@
         owner: "{{ uid }}"
         group: "{{ gid }}"
       loop:
-        - "{{ openproject_assets_dir }}"
-        - "{{ openproject_database_dir }}"
+        - "{{ mantis_config_dir }}"
+        - "{{ mantis_database_dir }}"
       become: true # elevate because is inside opt
 
     - name: Stop and remove the existing Mantis containers if it exists
