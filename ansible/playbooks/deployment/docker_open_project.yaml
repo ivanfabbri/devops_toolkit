@@ -1,5 +1,5 @@
 - name: Deploy Open Project
-  hosts: vms
+  hosts: controller
   gather_facts: false
 
   vars:
