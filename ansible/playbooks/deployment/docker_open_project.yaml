@@ -1,0 +1,68 @@
+- name: Deploy Open Project
+  hosts: vms
+  gather_facts: false
+
+  vars:
+
+    openproject_container_name: openproject
+    openproject_image: openproject/community:latest
+
+    # Volume mapping
+    openproject_assets_dir: /opt/openproject/assets
+    openproject_database_dir: /opt/openproject/database
+
+  tasks:
+
+    - name: Ensure the network is created
+      community.docker.docker_network:
+        name: openproject_network
+        state: present
+
+    - name: Create a directory to map Docker volumes
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0700'
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
+      loop:
+        - "{{ openproject_assets_dir }}"
+        - "{{ openproject_database_dir }}"
+      become: true # elevate because is inside opt
+
+    - name: Stop and remove the existing OpenProject container if it exists
+      community.docker.docker_container:
+        name: "{{ openproject_container_name }}"
+        state: absent
+
+    - name: Remove the existing OpenProject image if it exists
+      community.docker.docker_image:
+        name: "{{ openproject_image }}"
+        source: local
+        state: absent
+
+    - name: Pull the latest OpenProject image
+      community.docker.docker_image:
+        name: "{{ openproject_image }}"
+        source: pull
+
+    - name: Deploy OpenProject
+      community.docker.docker_container:
+        name: "{{ openproject_container_name }}"
+        image: "{{ openproject_image }}"
+        ports:
+          - "8080:80"
+        env:
+          SECRET_KEY_BASE: "{{ lookup('env', 'openproject_secret_key') }}"
+          DATABASE_URL: internal
+          OPENPROJECT_HOST__NAME: "{{ lookup('env', 'openproject_domain') }}"
+          OPENPROJECT_HTTPS: "false"
+        volumes:
+          - "{{ openproject_assets_dir }}:/var/openproject/assets"
+          - "{{ openproject_database_dir }}:/var/lib/postgresql"
+        networks:
+          - name: openproject_network
+        restart_policy: unless-stopped
+        state: started
+
+    
