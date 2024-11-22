@@ -57,6 +57,7 @@
     - name: Deploy PostgreSQL container
       community.docker.docker_container:
         name: "{{ postgres_container_name }}"
+        hostname: openproject_postgres
         image: "{{ postgres_image }}"
         networks:
           - name: openproject_network
@@ -74,7 +75,7 @@
           - "8081:80"
         env:
           SECRET_KEY_BASE: "{{ lookup('env', 'openproject_secret_key') }}"
-          DATABASE_URL: "postgresql://openproject:{{ lookup('env', 'openproject_db_password') }}@{{ postgres_container_name }}:5432/openproject_db"
+          DATABASE_URL: "postgresql://openproject:{{ lookup('env', 'openproject_db_password') }}@openproject_postgres:5432/openproject_db"
           OPENPROJECT_HOST__NAME: "{{ lookup('env', 'openproject_domain') }}"
           OPENPROJECT_HTTPS: "false"
         volumes:
