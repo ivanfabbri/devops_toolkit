@@ -6,6 +6,8 @@
 
     openproject_container_name: openproject
     openproject_image: openproject/community:latest
+    postgres_container_name: openproject_postgres
+    postgres_image: openproject/community:latest
 
     # Volume mapping
     openproject_assets_dir: /opt/openproject/assets
@@ -46,6 +48,18 @@
         name: "{{ openproject_image }}"
         source: pull
 
+    - name: Deploy PostgreSQL container
+      community.docker.docker_container:
+        name: "{{ postgres_container_name }}"
+        image: "{{ postgres_image }}"
+        networks:
+          - name: openproject_network
+        env:
+          POSTGRES_USER: openproject
+          POSTGRES_PASSWORD: "{{ lookup('env', 'openproject_db_password') }}"
+          POSTGRES_DB: openproject_db
+        state: started
+
     - name: Deploy OpenProject
       community.docker.docker_container:
         name: "{{ openproject_container_name }}"
@@ -54,7 +68,7 @@
           - "8080:80"
         env:
           SECRET_KEY_BASE: "{{ lookup('env', 'openproject_secret_key') }}"
-          DATABASE_URL: internal
+          DATABASE_URL: "postgresql://openproject:{{ lookup('env', 'openproject_db_password') }}@{{ postgres_container_name }}:5432/openproject_db"
           OPENPROJECT_HOST__NAME: "{{ lookup('env', 'openproject_domain') }}"
           OPENPROJECT_HTTPS: "false"
         volumes:
