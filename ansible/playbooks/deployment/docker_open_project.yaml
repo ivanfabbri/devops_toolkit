@@ -5,7 +5,7 @@
   vars:
 
     openproject_container_name: openproject
-    openproject_image: openproject/community:latest
+    openproject_image: openproject/community:13-slim
     postgres_container_name: openproject_postgres
     postgres_image: postgres:latest
 
