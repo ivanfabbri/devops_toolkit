@@ -58,7 +58,6 @@
       ansible.builtin.service:
         name: firewalld
         state: reloaded
-      become: true # should be run as root
 
     # Update Docker service to expose the API to let Jenkins create agents on demand
     - name: Ensure the docker.service file exists
@@ -82,6 +81,17 @@
 
     - name: Reload the systemd daemon
       ansible.builtin.command: systemctl daemon-reload
+
+    - name: Allow traffic in default zone on port 4243/tcp for metrics endpoint
+      ansible.posix.firewalld:
+        port: 4243/tcp
+        permanent: true
+        state: enabled
+
+    - name: Reload firewalld service
+      ansible.builtin.service:
+        name: firewalld
+        state: reloaded
 
     - name: Restart the Docker service
       ansible.builtin.service:
