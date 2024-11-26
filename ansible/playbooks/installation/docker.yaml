@@ -60,8 +60,39 @@
         state: reloaded
       become: true # should be run as root
 
-    - name: Start docker service, if not started
+    # Update Docker service to expose the API to let Jenkins create agents on demand
+    - name: Ensure the docker.service file exists
+      ansible.builtin.stat:
+        path: /lib/systemd/system/docker.service
+      register: docker_service_file
+
+    - name: Backup the existing docker.service file
+      ansible.builtin.copy:
+        src: /lib/systemd/system/docker.service
+        dest: /lib/systemd/system/docker.service.bak
+        remote_src: yes
+      when: docker_service_file.stat.exists
+
+    - name: Update the ExecStart line in the docker.service file
+      ansible.builtin.lineinfile:
+        path: /lib/systemd/system/docker.service
+        regexp: '^ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock'
+        line: 'ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:4243 -H unix:///var/run/docker.sock'
+        backup: yes
+
+    - name: Reload the systemd daemon
+      ansible.builtin.command: systemctl daemon-reload
+
+    - name: Restart the Docker service
       ansible.builtin.service:
         name: docker
-        state: started
-        enabled: yes
+        state: restarted
+
+    - name: Verify Docker is listening on the TCP port
+      ansible.builtin.command: ss -tln | grep 4243
+      register: tcp_check
+      ignore_errors: true
+
+    - name: Debug output of TCP port check
+      ansible.builtin.debug:
+        msg: "{{ tcp_check.stdout }}"
