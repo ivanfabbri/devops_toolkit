@@ -78,6 +78,7 @@
         env:
           SECRET_KEY_BASE: "{{ lookup('env', 'openproject_secret_key') }}"
           OPENPROJECT_DB_URL: "postgresql://postgres:5432/openproject_db"
+          DATABASE_URL: postgresql://postgres:5432/openproject_db
           OPENPROJECT_HOST__NAME: "{{ lookup('env', 'openproject_domain') }}"
           OPENPROJECT_HTTPS: "true"
           OPENPROJECT_DB_USERNAME: openproject
