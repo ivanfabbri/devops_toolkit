@@ -17,9 +17,31 @@
         mode: '0700'
         owner: "{{ uid }}"
         group: "{{ gid }}"
-      become: true # elevate because is inside opt
+      become: true
 
-    - name: Deploy Grafana
+    - name: Stop the existing Grafana container (if running)
+      community.docker.docker_container:
+        name: grafana
+        state: stopped
+      ignore_errors: true  # Ignore errors if the container is not running
+
+    - name: Remove the existing Grafana container
+      community.docker.docker_container:
+        name: grafana
+        state: absent
+
+    - name: Remove the old Grafana image
+      community.docker.docker_image:
+        name: grafana/grafana
+        state: absent
+      ignore_errors: true  # Ignore errors if the image is not present
+
+    - name: Pull the latest Grafana image
+      community.docker.docker_image:
+        name: grafana/grafana:latest
+        source: pull
+
+    - name: Deploy Grafana with the latest image
       community.docker.docker_container:
         name: grafana
         image: grafana/grafana:latest
