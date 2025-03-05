@@ -5,16 +5,38 @@
 
   tasks:
 
-    - name: Create a directory to map Portainer information
+    - name: Create a directory to store Portainer data
       ansible.builtin.file:
         path: /opt/portainer
         state: directory
         mode: '0700'
         owner: "{{ uid }}"
         group: "{{ gid }}"
-      become: true # elevate because is inside opt
+      become: true
 
-    - name: Deploy portainer
+    - name: Stop the existing Portainer container (if running)
+      community.docker.docker_container:
+        name: portainer
+        state: stopped
+      ignore_errors: true  # Ignore if the container is not running
+
+    - name: Remove the existing Portainer container
+      community.docker.docker_container:
+        name: portainer
+        state: absent
+
+    - name: Remove the old Portainer image
+      community.docker.docker_image:
+        name: portainer/portainer-ce
+        state: absent
+      ignore_errors: true  # Ignore if the image is not present
+
+    - name: Pull the latest Portainer image
+      community.docker.docker_image:
+        name: portainer/portainer-ce:latest
+        source: pull
+
+    - name: Deploy Portainer container with the latest image
       community.docker.docker_container:
         name: portainer
         image: portainer/portainer-ce:latest
