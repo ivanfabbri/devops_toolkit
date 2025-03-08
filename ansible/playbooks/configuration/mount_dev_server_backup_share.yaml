@@ -1,5 +1,5 @@
 - name: Configure DEV Server backup share
-  hosts: controller
+  hosts: vms
   gather_facts: false
 
   tasks:

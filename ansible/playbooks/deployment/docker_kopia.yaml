@@ -1,5 +1,5 @@
 - name: Deploy Kopia in Docker
-  hosts: controller
+  hosts: vms
   gather_facts: false
 
   vars:
