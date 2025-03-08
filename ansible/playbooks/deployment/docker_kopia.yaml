@@ -1,0 +1,79 @@
+- name: Deploy Kopia in Docker
+  hosts: controller
+  gather_facts: false
+
+  vars:
+    kopia_container_name: kopia
+    kopia_image: kopia/kopia:latest
+    kopia_network: backup_network
+    kopia_port: "51515"
+    kopia_user: "{{ lookup('env', 'kopia_user') }}"
+    kopia_password: "{{ lookup('env', 'kopia_password') }}"
+    kopia_data_dir: /opt/kopia
+    kopia_source_dir: /opt
+    kopia_restore_dir: /opt/kopia/restore
+    kopia_dirs:
+      - { path: "/opt/kopia/config", desc: "Kopia config" }
+      - { path: "/opt/kopia/cache", desc: "Kopia cache" }
+      - { path: "/opt/kopia/logs", desc: "Kopia logs" }
+      - { path: "/opt/kopia/temp", desc: "Kopia temporary files" }
+      - { path: "/opt/kopia/restore", desc: "Kopia restore folder" }
+
+  tasks:
+
+    - name: Ensure the {{ kopia_network }} network exists
+      community.docker.docker_network:
+        name: "{{ kopia_network }}"
+        state: present
+
+    - name: Create necessary Kopia directories
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        mode: '0700'
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
+      with_items: "{{ kopia_dirs }}"
+      become: true
+
+    - name: Stop and remove existing {{ kopia_container_name }} container (if running)
+      community.docker.docker_container:
+        name: "{{ kopia_container_name }}"
+        state: absent
+      ignore_errors: true  # Ignore errors if the container doesn't exist
+
+    - name: Pull the latest Kopia image
+      community.docker.docker_image:
+        name: "{{ kopia_image }}"
+        source: pull
+
+    - name: Deploy {{ kopia_container_name }} with the latest image
+      community.docker.docker_container:
+        name: "{{ kopia_container_name }}"
+        hostname: "{{ kopia_container_name }}"
+        image: "{{ kopia_image }}"
+        command:
+          - server
+          - start
+          - --disable-csrf-token-checks
+          - --insecure
+          - --address=0.0.0.0:{{ kopia_port }}
+          - --server-username={{ kopia_user }}
+          - --server-password={{ kopia_password }}
+        ports:
+          - "{{ kopia_port }}:51515"
+        volumes:
+          - "{{ kopia_source_dir }}:/data:ro"
+          - "/opt/kopia/config:/app/config"
+          - "/opt/kopia/cache:/app/cache"
+          - "/opt/kopia/logs:/app/logs"
+          - "/mnt/{{ kopia_destination_dir }}:/repository"  # Dynamic path per VM
+          - "/opt/kopia/temp:/tmp:shared"
+          - "{{ kopia_restore_dir }}:/restore"
+        env:
+          TZ: "America/Sao_Paulo"
+          KOPIA_PASSWORD: "{{ lookup('env', 'kopia_repo_pass') }}"
+        networks:
+          - name: "{{ kopia_network }}"
+        restart_policy: unless-stopped
+        state: started

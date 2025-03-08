@@ -1,5 +1,5 @@
-- name: Configure a backup folder as a Windows share mount
-  hosts: vms
+- name: Configure DEV Server backup share
+  hosts: controller
   gather_facts: false
 
   tasks:
@@ -25,22 +25,15 @@
       ansible.builtin.copy:
         dest: /opt/vault/.smbcredentials
         content: |
-          username={{ lookup('ansible.builtin.env', 'win_share_user') }}
-          password={{ lookup('ansible.builtin.env', 'win_share_password') }}
+          username={{ lookup('env', 'nas_share_user') }}
+          password={{ lookup('env', 'nas_share_password') }}
           domain=WORKGROUP
         mode: '0600'
 
-    - name: Create a directory to store the mount
-      ansible.builtin.file:
-        path: /mnt/backup_library
-        state: directory
-        mode: '0700'
-      become: true
-
     - name: Mount SMB volume and change fstab file
       ansible.posix.mount:
-        src: "{{ lookup('ansible.builtin.env', 'backup_share_url') }}" # URL in the form //X.X.X.X/FOLDER
-        path: /mnt/backup_library
+        src: "{{ lookup('env', 'kopia_backup_share') }}/{{ kopia_destination_dir }}" # URL in the form //X.X.X.X/FOLDER
+        path: "/mnt/{{ kopia_destination_dir }}" # VM specific path
         opts: "credentials=/opt/vault/.smbcredentials,uid={{ uid }},gid={{ gid }},x-systemd.automount"
         fstype: cifs
         state: mounted
