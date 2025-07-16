@@ -51,20 +51,20 @@
           - /opt/grafana:/var/lib/grafana
         env:
           # SSO with Authentik provider
-          GF_SERVER_ROOT_URL: "{{ lookup('ansible.builtin.env', 'grafana_domain_url') }}"
+          GF_SERVER_ROOT_URL: "{{ lookup('env', 'grafana_domain_url') }}"
           GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
           GF_AUTH_GENERIC_OAUTH_NAME: "authentik"
-          GF_AUTH_GENERIC_OAUTH_CLIENT_ID: "{{ lookup('ansible.builtin.env', 'grafana_sso_client_id') }}"
-          GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: "{{ lookup('ansible.builtin.env', 'grafana_sso_client_secret') }}"
+          GF_AUTH_GENERIC_OAUTH_CLIENT_ID: "{{ lookup('env', 'grafana_sso_client_id') }}"
+          GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: "{{ lookup('env', 'grafana_sso_client_secret') }}"
           GF_AUTH_GENERIC_OAUTH_SCOPES: "openid profile email"
-          GF_AUTH_GENERIC_OAUTH_AUTH_URL: "{{ lookup('ansible.builtin.env', 'grafana_sso_authorize') }}"
-          GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "{{ lookup('ansible.builtin.env', 'grafana_sso_token') }}"
-          GF_AUTH_GENERIC_OAUTH_API_URL: "{{ lookup('ansible.builtin.env', 'grafana_sso_user_info') }}"
-          GF_AUTH_SIGNOUT_REDIRECT_URL: "{{ lookup('ansible.builtin.env', 'grafana_sso_redirect') }}"
+          GF_AUTH_GENERIC_OAUTH_AUTH_URL: "{{ lookup('env', 'grafana_sso_authorize') }}"
+          GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "{{ lookup('env', 'grafana_sso_token') }}"
+          GF_AUTH_GENERIC_OAUTH_API_URL: "{{ lookup('env', 'grafana_sso_user_info') }}"
+          GF_AUTH_SIGNOUT_REDIRECT_URL: "{{ lookup('env', 'grafana_sso_redirect') }}"
           # Optionally enable auto-login (bypasses Grafana login screen)
           GF_AUTH_OAUTH_AUTO_LOGIN: "true"
           # Optionally map user groups from Authentik to Grafana roles
-          GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "{{ lookup('ansible.builtin.env', 'grafana_sso_role_map') }}"
+          GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "{{ lookup('env', 'grafana_sso_role_map') }}"
         networks:
           - name: monitoring_network
         user: "{{ uid }}:{{ gid }}"
