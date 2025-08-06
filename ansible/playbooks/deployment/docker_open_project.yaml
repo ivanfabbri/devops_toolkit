@@ -38,13 +38,7 @@
         state: absent
       loop:
         - "{{ openproject_container_name }}"
-        - "{{ postgres_container_name }}"        
-
-    - name: Remove the existing OpenProject image if it exists
-      community.docker.docker_image:
-        name: "{{ openproject_image }}"
-        source: local
-        state: absent
+        - "{{ postgres_container_name }}"
 
     - name: Pull the latest Docker images
       community.docker.docker_image:
