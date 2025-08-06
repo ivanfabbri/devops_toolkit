@@ -52,7 +52,7 @@
         env:
           WATCHTOWER_CLEANUP: "true"
           WATCHTOWER_LABEL_ENABLE: "true"
-          WATCHTOWER_SCHEDULE: "0 05 18 * * *"
+          WATCHTOWER_SCHEDULE: "0 21 18 * * *"
           WATCHTOWER_NOTIFICATIONS: "shoutrrr"
           WATCHTOWER_NOTIFICATION_URL: "telegram://{{ lookup('env', 'telegram_homelab_token') }}@telegram?chats={{ lookup('env', 'telegram_homelab_chat_id') }}"
           WATCHTOWER_HTTP_API_TOKEN: "{{ lookup('env', 'watchtower_api_token') }}"
