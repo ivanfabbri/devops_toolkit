@@ -1,0 +1,64 @@
+- name: Deploy Watchtower
+  hosts: vms
+  gather_facts: false
+
+  vars:
+    container_name: watchtower
+    docker_image: containrrr/watchtower:latest
+    network_name: update_network
+    watchtower_config_dir: /opt/watchtower
+
+  tasks:
+
+    - name: Ensure Docker service is running
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Ensure the network is created
+      community.docker.docker_network:
+        name: "{{ network_name }}"
+        state: present
+
+    - name: Create Watchtower config directory
+      ansible.builtin.file:
+        path: "{{ watchtower_config_dir }}"
+        state: directory
+        mode: '0755'
+        owner: "{{ uid }}"
+        group: "{{ gid }}"
+      become: true
+
+    - name: Remove existing Watchtower container if it exists
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        state: absent
+
+    - name: Pull latest Watchtower image
+      community.docker.docker_image:
+        name: "{{ docker_image }}"
+        source: pull
+
+    - name: Deploy Watchtower container
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        image: "{{ docker_image }}"
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+          - "{{ watchtower_config_dir }}:/config"
+        ports:
+          - "8086:8080"
+        env:
+          WATCHTOWER_CLEANUP: "true"
+          WATCHTOWER_LABEL_ENABLE: "true"
+          WATCHTOWER_SCHEDULE: "0 05 18 * * *"
+          WATCHTOWER_NOTIFICATIONS: "shoutrrr"
+          WATCHTOWER_NOTIFICATION_URL: "telegram://{{ lookup('env', 'telegram_homelab_token') }}@telegram?chats={{ lookup('env', 'telegram_homelab_chat_id') }}"
+          WATCHTOWER_HTTP_API_TOKEN: "{{ lookup('env', 'watchtower_api_token') }}"
+          WATCHTOWER_HTTP_API_METRICS: "true"
+          TZ: America/Sao_Paulo
+        restart_policy: unless-stopped
+        networks:
+          - name: "{{ network_name }}"
+        state: started

@@ -54,7 +54,7 @@
           MYSQL_RANDOM_ROOT_PASSWORD: "yes"
           MYSQL_DATABASE: semaphore
           MYSQL_USER: semaphore
-          MYSQL_PASSWORD: secret-password
+          MYSQL_PASSWORD: "{{ lookup('env', 'semaphore_mysql_password') }}"
         networks:
           - name: semaphore_network
         volumes:
@@ -70,20 +70,22 @@
           - "3002:3000"
         env:
           SEMAPHORE_DB_USER: semaphore
-          SEMAPHORE_DB_PASS: secret-password
+          SEMAPHORE_DB_PASS: "{{ lookup('env', 'semaphore_mysql_password') }}"
           SEMAPHORE_DB_HOST: semaphore_mysql
           SEMAPHORE_DB_PORT: "3306"
           SEMAPHORE_DB_DIALECT: mysql
           SEMAPHORE_DB: semaphore
           SEMAPHORE_PLAYBOOK_PATH: /tmp/semaphore/
-          SEMAPHORE_ADMIN_PASSWORD: secret-admin-password  # change!
+          SEMAPHORE_ADMIN_PASSWORD: "{{ lookup('env', 'semaphore_admin_password') }}"
           SEMAPHORE_ADMIN_NAME: admin
           SEMAPHORE_ADMIN_EMAIL: admin@localhost
           SEMAPHORE_ADMIN: admin
-          SEMAPHORE_ACCESS_KEY_ENCRYPTION: change-this-key  # add to your access key encryption !
+          SEMAPHORE_ACCESS_KEY_ENCRYPTION: "{{ lookup('env', 'semaphore_encryption_key') }}"  # add to your access key encryption !
           ANSIBLE_HOST_KEY_CHECKING: "false"  # (optional) change to true if you want to enable host key checking
         networks:
           - name: semaphore_network
+        labels:
+          com.centurylinklabs.watchtower.enable: "true"
         user: root # need to be run as root 
         volumes:
           - /opt/semaphore/inventory/:/inventory:ro

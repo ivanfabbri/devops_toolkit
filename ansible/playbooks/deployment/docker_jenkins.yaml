@@ -30,6 +30,8 @@
           - /opt/jenkins/home:/var/jenkins_home
           # Mounts the host machine’s docker socket to the Jenkins container due to docker-in-docker (use docker to create docker image inside jenkins docker container)
           - /var/run/docker.sock:/var/run/docker.sock
+        labels:
+          com.centurylinklabs.watchtower.enable: "true"
         networks:
           - name: devops_network
         privileged: yes

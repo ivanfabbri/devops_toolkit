@@ -73,6 +73,8 @@
         env:
           TZ: "America/Sao_Paulo"
           KOPIA_PASSWORD: "{{ lookup('env', 'kopia_repo_pass') }}"
+        labels:
+          com.centurylinklabs.watchtower.enable: "true"
         networks:
           - name: "{{ kopia_network }}"
         restart_policy: unless-stopped

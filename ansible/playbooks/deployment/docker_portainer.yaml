@@ -25,12 +25,6 @@
         name: portainer
         state: absent
 
-    - name: Remove the old Portainer image
-      community.docker.docker_image:
-        name: portainer/portainer-ce
-        state: absent
-      ignore_errors: true  # Ignore if the image is not present
-
     - name: Pull the latest Portainer image
       community.docker.docker_image:
         name: portainer/portainer-ce:latest
@@ -42,6 +36,8 @@
         image: portainer/portainer-ce:latest
         ports:
           - "9443:9443"
+        labels:
+          com.centurylinklabs.watchtower.enable: "true"
         volumes:
           - /run/docker.sock:/var/run/docker.sock
           - /opt/portainer:/data

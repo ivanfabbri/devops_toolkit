@@ -85,6 +85,8 @@
           - /opt/sonarqube/extensions:/opt/sonarqube/extensions
           - /opt/sonarqube/logs:/opt/sonarqube/logs
           - /opt/sonarqube/temp:/opt/sonarqube/temp
+        labels:
+          com.centurylinklabs.watchtower.enable: "true"
         networks:
           - name: devops_network
         restart_policy: unless-stopped

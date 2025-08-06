@@ -37,6 +37,8 @@
         volumes:
           - /opt/prometheus/config:/etc/prometheus # map the configuration file
           - /opt/prometheus/data:/prometheus
+        labels:
+          com.centurylinklabs.watchtower.enable: "true"
         networks:
           - name: monitoring_network
         user: "{{ uid }}:{{ gid }}"
