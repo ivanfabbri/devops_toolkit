@@ -83,6 +83,8 @@
           OPENPROJECT_HTTPS: "true"
           #OPENPROJECT_DB_USERNAME: openproject
           #OPENPROJECT_DB_PASSWORD: "{{ lookup('env', 'openproject_db_password') }}"
+        labels:
+          com.centurylinklabs.watchtower.enable: "true"
         volumes:
           - "{{ openproject_assets_dir }}:/var/openproject/assets"
         networks:
